@@ -7,6 +7,7 @@ interface BrandCardProps {
   color: string;
   textColor?: string;
   className?: string;
+  isImage?: boolean;
 }
 
 export const BrandCard = ({ 
@@ -14,7 +15,8 @@ export const BrandCard = ({
   logo, 
   color, 
   textColor = "white",
-  className 
+  className,
+  isImage = false
 }: BrandCardProps) => {
   return (
     <Card 
@@ -26,9 +28,17 @@ export const BrandCard = ({
     >
       <div className="aspect-[3/2] flex flex-col items-center justify-center p-6">
         {/* Brand Logo/Icon */}
-        <div className="text-6xl mb-4" style={{ color: textColor }}>
-          {logo}
-        </div>
+        {isImage ? (
+          <img 
+            src={logo} 
+            alt={`${name} logo`}
+            className="w-16 h-16 object-contain mb-4"
+          />
+        ) : (
+          <div className="text-6xl mb-4" style={{ color: textColor }}>
+            {logo}
+          </div>
+        )}
         
         {/* Brand Name */}
         <h3 

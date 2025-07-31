@@ -8,45 +8,48 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark theme by default - Cardvana style */
-    --background: 220 13% 9%;
-    --foreground: 220 9% 95%;
+    /* Vibrant theme - Cardvana style */
+    --background: 220 20% 8%;
+    --foreground: 220 15% 96%;
 
-    --card: 220 13% 12%;
-    --card-foreground: 220 9% 95%;
+    --card: 220 18% 12%;
+    --card-foreground: 220 15% 96%;
 
-    --popover: 220 13% 12%;
-    --popover-foreground: 220 9% 95%;
+    --popover: 220 18% 12%;
+    --popover-foreground: 220 15% 96%;
 
-    --primary: 220 9% 95%;
-    --primary-foreground: 220 13% 9%;
-    --primary-glow: 220 30% 60%;
+    --primary: 280 100% 70%;
+    --primary-foreground: 220 20% 8%;
+    --primary-glow: 260 100% 80%;
+    --primary-dark: 280 100% 60%;
 
-    --secondary: 220 13% 15%;
-    --secondary-foreground: 220 9% 85%;
+    --secondary: 220 15% 16%;
+    --secondary-foreground: 220 15% 90%;
 
-    --muted: 220 13% 15%;
-    --muted-foreground: 220 9% 65%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 220 12% 70%;
 
-    --accent: 220 13% 18%;
-    --accent-foreground: 220 9% 95%;
+    --accent: 280 80% 15%;
+    --accent-foreground: 280 100% 95%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 220 9% 95%;
+    --destructive-foreground: 220 15% 96%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 18%;
-    --ring: 220 30% 60%;
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 280 100% 70%;
 
     --radius: 0.75rem;
 
-    /* Cardvana specific tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(220 13% 12%), hsl(220 13% 18%));
-    --gradient-card: linear-gradient(135deg, hsl(220 13% 15%), hsl(220 13% 20%));
-    --gradient-hero: linear-gradient(180deg, hsl(220 13% 9%), hsl(220 13% 12%));
-    --shadow-elegant: 0 25px 50px -12px hsl(220 13% 5% / 0.5);
-    --shadow-card: 0 10px 30px -5px hsl(220 13% 5% / 0.3);
-    --border-subtle: hsl(220 13% 20%);
+    /* Cardvana vibrant tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(280 100% 70%), hsl(260 100% 80%), hsl(240 100% 85%));
+    --gradient-card: linear-gradient(135deg, hsl(220 18% 12%), hsl(220 15% 18%));
+    --gradient-hero: linear-gradient(180deg, hsl(220 20% 8%), hsl(280 80% 15%), hsl(220 18% 12%));
+    --gradient-cta: linear-gradient(135deg, hsl(280 100% 70%), hsl(260 100% 75%));
+    --shadow-elegant: 0 25px 50px -12px hsl(280 100% 70% / 0.3);
+    --shadow-card: 0 10px 30px -5px hsl(220 20% 5% / 0.4);
+    --shadow-glow: 0 0 40px hsl(280 100% 70% / 0.4);
+    --border-subtle: hsl(220 15% 22%);
 
     --sidebar-background: 220 13% 12%;
     --sidebar-foreground: 220 9% 95%;
@@ -117,8 +120,12 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-card);
   }
   
-  .border-subtle {
-    border-color: var(--border-subtle);
+  .gradient-cta {
+    background: var(--gradient-cta);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
   }
 
   .animate-float {
