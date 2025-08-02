@@ -14,6 +14,9 @@ export const Footer = () => {
       "À propos"
     ],
     "Légal": [
+      "Conditions générales",
+      "Politique de remboursement", 
+      "Politique de réclamation",
       "Politique de confidentialité",
       "Cookies",
       "Mentions légales"

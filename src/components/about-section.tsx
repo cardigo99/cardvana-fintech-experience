@@ -25,10 +25,15 @@ export const AboutSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
+            <div className="inline-flex items-center space-x-2 bg-accent/50 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-subtle">
+              <span className="text-sm font-medium text-foreground">
+                L'avenir de la carte commence ici
+              </span>
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               À propos de Cardvana
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-foreground max-w-3xl mx-auto leading-relaxed">
               Cardvana révolutionne la gestion et la distribution des cartes cadeaux. 
               Notre plateforme moderne facilite l'achat, la gestion et l'utilisation de cartes cadeaux 
               pour les entreprises et les particuliers.
@@ -49,7 +54,7 @@ export const AboutSection = () => {
                   <h3 className="text-xl font-semibold text-foreground mb-4">
                     {feature.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-foreground/80 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -66,7 +71,7 @@ export const AboutSection = () => {
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium text-foreground">+10,000 clients satisfaits</p>
-                <p className="text-xs text-muted-foreground">Font confiance à Cardvana</p>
+                <p className="text-xs text-foreground/70">Font confiance à Cardvana</p>
               </div>
             </div>
           </div>

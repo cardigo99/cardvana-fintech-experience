@@ -12,8 +12,8 @@ export const TestimonialsSection = () => {
     },
     {
       name: "Pierre Martin",
-      role: "CEO, StartupLab",
-      content: "L'API de Cardvana s'est intégrée parfaitement à notre plateforme. Nos clients adorent la simplicité du processus.",
+      role: "CEO, StartupLab", 
+      content: "La qualité des cartes est exceptionnelle et le service ultra-rapide. En 30 secondes, nos clients reçoivent leurs cartes cadeaux.",
       rating: 5,
       avatar: "👨‍💻"
     },
@@ -33,7 +33,7 @@ export const TestimonialsSection = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Ce que disent nos clients
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-foreground max-w-2xl mx-auto">
             Découvrez pourquoi plus de 10,000 entreprises font confiance à Cardvana 
             pour leurs besoins en cartes cadeaux.
           </p>
@@ -65,7 +65,7 @@ export const TestimonialsSection = () => {
                     <div className="font-semibold text-foreground">
                       {testimonial.name}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-foreground/70">
                       {testimonial.role}
                     </div>
                   </div>
