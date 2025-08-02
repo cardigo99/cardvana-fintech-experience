@@ -2,14 +2,10 @@ import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Facebook, Twitter, Instagram, Linkedin, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 
 export const Footer = () => {
   const footerLinks = {
-    "Produits": [
-      "Cartes cadeaux",
-      "Tarifs"
-    ],
     "Support": [
       "Centre d'aide",
       "Contact"
@@ -18,19 +14,12 @@ export const Footer = () => {
       "À propos"
     ],
     "Légal": [
-      "Conditions d'utilisation",
       "Politique de confidentialité",
       "Cookies",
       "Mentions légales"
     ]
   };
 
-  const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-  ];
 
   return (
     <footer className="bg-card/50 border-t border-subtle">
@@ -88,19 +77,6 @@ export const Footer = () => {
         <div className="py-8 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
           <div className="text-sm text-muted-foreground">
             © 2024 Cardvana. Tous droits réservés.
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            {socialLinks.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                className="w-10 h-10 bg-accent hover:bg-accent/80 rounded-lg flex items-center justify-center transition-colors"
-                aria-label={social.label}
-              >
-                <social.icon className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-              </a>
-            ))}
           </div>
         </div>
       </div>

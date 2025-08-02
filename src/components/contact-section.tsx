@@ -20,7 +20,7 @@ export const ContactSection = () => {
           </p>
         </div>
         
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           {/* Contact Form */}
           <Card className="gradient-card border-subtle shadow-card animate-slide-up">
             <CardHeader>
@@ -66,18 +66,6 @@ export const ContactSection = () => {
             </CardContent>
           </Card>
           
-          {/* Contact Info */}
-          <div className="space-y-8 animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6">
-                Nous contacter
-              </h3>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Notre équipe d'experts est disponible pour répondre à toutes vos questions 
-                et vous accompagner dans vos projets de cartes cadeaux.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>
