@@ -33,15 +33,6 @@ export const HeroSection = () => {
             Simple, élégant, instantané.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <Button variant="cta" size="lg" className="group text-lg px-8 py-6 font-semibold">
-              Découvrir Cardvana
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6 border-subtle hover:border-primary/50 transition-all duration-300">
-              Voir les cartes
-            </Button>
-          </div>
         </div>
       </div>
       

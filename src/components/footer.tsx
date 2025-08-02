@@ -8,21 +8,14 @@ export const Footer = () => {
   const footerLinks = {
     "Produits": [
       "Cartes cadeaux",
-      "API Entreprise",
-      "Solutions B2B",
       "Tarifs"
     ],
     "Support": [
       "Centre d'aide",
-      "Contact",
-      "Documentation",
-      "Statut des services"
+      "Contact"
     ],
     "Entreprise": [
-      "À propos",
-      "Carrières",
-      "Presse",
-      "Partenaires"
+      "À propos"
     ],
     "Légal": [
       "Conditions d'utilisation",
