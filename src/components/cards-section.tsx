@@ -41,15 +41,6 @@ export const CardsSection = () => {
   return (
     <section id="cards" className="py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Nos cartes cadeaux
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Découvrez notre sélection de cartes cadeaux des plus grandes marques, 
-            disponibles instantanément et en toute sécurité.
-          </p>
-        </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
           {brands.map((brand, index) => (

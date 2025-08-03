@@ -25,11 +25,6 @@ export const AboutSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center space-x-2 bg-accent/50 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-subtle">
-              <span className="text-sm font-medium text-foreground">
-                L'avenir de la carte commence ici
-              </span>
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               À propos de Cardvana
             </h2>
