@@ -11,7 +11,7 @@ import decathlonLogo from "@/assets/logos/decathlon-official.png";
 import fnacLogo from "@/assets/logos/fnac-official.png";
 import zalandoLogo from "@/assets/logos/zalando-official.png";
 import playstationLogo from "@/assets/logos/playstation.png";
-import netflixLogo from "@/assets/logos/netflix.png";
+import samsungLogo from "@/assets/logos/samsung.png";
 import uberLogo from "@/assets/logos/uber-new.png";
 import nikeLogo from "@/assets/logos/nike-clean.png";
 import airbnbLogo from "@/assets/logos/airbnb.svg";
@@ -29,7 +29,7 @@ const brands = [
   { name: "Fnac", logo: fnacLogo, color: "#E1A13A", isImage: true },
   { name: "Zalando", logo: zalandoLogo, color: "#FF6900", isImage: true },
   { name: "PlayStation", logo: playstationLogo, color: "#003791", isImage: true },
-  { name: "Netflix", logo: netflixLogo, color: "#E50914", isImage: true },
+  { name: "Samsung", logo: samsungLogo, color: "#1428A0", isImage: true },
   { name: "Uber", logo: uberLogo, color: "#000000", isImage: true },
   { name: "Airbnb", logo: airbnbLogo, color: "#FF5A5F", isImage: true },
   { name: "Transcash", logo: transcashLogo, color: "#2E8B57", isImage: true },
