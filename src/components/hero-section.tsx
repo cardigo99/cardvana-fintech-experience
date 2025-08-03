@@ -20,12 +20,15 @@ export const HeroSection = () => {
             </span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
-            Découvrez Cardvana
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+              Découvrez Cardvana
+            </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-            La plateforme nouvelle génération pour vos cartes cadeaux.
+            La plateforme nouvelle génération pour vos cartes cadeaux des plus grandes marques, 
+            disponibles instantanément et en toute sécurité.
           </p>
           
         </div>
