@@ -1,14 +1,25 @@
-import { Card } from "@/components/ui/card";
-
+// Import logos
+import amazonLogo from "@/assets/logos/amazon.svg";
+import appleLogo from "@/assets/logos/apple.png";
+import sephoraLogo from "@/assets/logos/sephora.png";
+import auchanLogo from "@/assets/logos/auchan-official.png";
+import decathlonLogo from "@/assets/logos/decathlon-official.png";
+import fnacLogo from "@/assets/logos/fnac-official.png";
+import zalandoLogo from "@/assets/logos/zalando-official.png";
+import playstationLogo from "@/assets/logos/playstation.png";
+import samsungLogo from "@/assets/logos/samsung.png";
+import uberLogo from "@/assets/logos/uber-new.png";
+import nikeLogo from "@/assets/logos/nike-clean.png";
+import airbnbLogo from "@/assets/logos/airbnb.svg";
+import transcashLogo from "@/assets/logos/transcash.png";
+import pcsLogo from "@/assets/logos/pcs.png";
+import paysafecardLogo from "@/assets/logos/paysafecard.png";
 export const CardsSection = () => {
-  return (
-    <section id="cards" className="py-24 bg-background">
+  return <section id="cards" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
-              Nos cartes cadeaux
-            </span>
+            <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">Logo 2</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Découvrez notre sélection de cartes cadeaux des plus grandes marques, 
@@ -17,55 +28,23 @@ export const CardsSection = () => {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
-          {/* Placeholders pour logos - modifiables dans l'éditeur visuel */}
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 1</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 2</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 3</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 4</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 5</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 6</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 7</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 8</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 9</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 10</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 11</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 12</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 13</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 14</div>
-          </Card>
-          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
-            <div className="text-sm text-muted-foreground">Logo 15</div>
-          </Card>
+          <img src={amazonLogo} alt="Amazon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={nikeLogo} alt="Nike" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={sephoraLogo} alt="Sephora" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={auchanLogo} alt="Auchan" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={decathlonLogo} alt="Decathlon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={appleLogo} alt="Apple" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={fnacLogo} alt="Fnac" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={zalandoLogo} alt="Zalando" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={playstationLogo} alt="PlayStation" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={samsungLogo} alt="Samsung" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={uberLogo} alt="Uber" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={airbnbLogo} alt="Airbnb" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={transcashLogo} alt="Transcash" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={pcsLogo} alt="PCS" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src={paysafecardLogo} alt="Paysafecard" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
         </div>
         
       </div>
-    </section>
-  );
+    </section>;
 };
