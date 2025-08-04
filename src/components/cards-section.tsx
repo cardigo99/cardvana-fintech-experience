@@ -37,7 +37,7 @@ export const CardsSection = () => {
           <img src={fnacLogo} alt="Fnac" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={zalandoLogo} alt="Zalando" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={playstationLogo} alt="PlayStation" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={samsungLogo} alt="Samsung" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/fea72e54-439a-4060-bc56-01c80eb7a5a5.png" alt="Samsung" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={uberLogo} alt="Uber" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={airbnbLogo} alt="Airbnb" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={transcashLogo} alt="Transcash" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
