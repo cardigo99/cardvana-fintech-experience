@@ -28,21 +28,21 @@ export const CardsSection = () => {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
-          <img src="/lovable-uploads/6a08984d-0c1f-463f-acd7-e7810e927292.png" alt="Nike Swoosh" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/506a8cf4-4173-4136-8112-01665a8a31be.png" alt="Amazon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={nikeLogo} alt="Nike" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={sephoraLogo} alt="Sephora" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={auchanLogo} alt="Auchan" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={decathlonLogo} alt="Decathlon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/a0843980-93a2-4054-9177-3a52e55bde5a.png" alt="Auchan" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/5ffa54bf-4bab-45da-a30e-2f9cab2ef77f.png" alt="Decathlon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={appleLogo} alt="Apple" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={fnacLogo} alt="Fnac" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={zalandoLogo} alt="Zalando" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={playstationLogo} alt="PlayStation" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/f55d6a71-ef59-4a09-a9a7-dce1e8b3a4f5.png" alt="Fnac" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/ae46c9f1-e8b3-4d26-acda-fc827e65ef80.png" alt="Zalando" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/340c09f1-3a7e-4515-8eac-6f523c02309a.png" alt="PlayStation" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src="/lovable-uploads/fea72e54-439a-4060-bc56-01c80eb7a5a5.png" alt="Samsung" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={uberLogo} alt="Uber" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={airbnbLogo} alt="Airbnb" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={transcashLogo} alt="Transcash" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={pcsLogo} alt="PCS" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={paysafecardLogo} alt="Paysafecard" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/4476bbbf-9f85-4fbb-ae2f-07d33934de59.png" alt="Transcash" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/b56f24a8-7c02-4790-9394-28a7aeedf45a.png" alt="PCS" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/0933b458-6ac9-4244-8d74-28f920c03d87.png" alt="Paysafecard" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
         </div>
         
       </div>
