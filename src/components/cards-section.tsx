@@ -28,7 +28,7 @@ export const CardsSection = () => {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
-          <img src={amazonLogo} alt="Amazon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          <img src="/lovable-uploads/6a08984d-0c1f-463f-acd7-e7810e927292.png" alt="Nike Swoosh" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={nikeLogo} alt="Nike" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={sephoraLogo} alt="Sephora" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
           <img src={auchanLogo} alt="Auchan" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
