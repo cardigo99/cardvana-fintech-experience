@@ -54,6 +54,15 @@ export const CardsSection = () => {
           <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
             <div className="text-sm text-muted-foreground">Logo 12</div>
           </Card>
+          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
+            <div className="text-sm text-muted-foreground">Logo 13</div>
+          </Card>
+          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
+            <div className="text-sm text-muted-foreground">Logo 14</div>
+          </Card>
+          <Card className="aspect-[3/2] flex items-center justify-center p-4 hover:scale-105 transition-transform duration-300">
+            <div className="text-sm text-muted-foreground">Logo 15</div>
+          </Card>
         </div>
         
       </div>
