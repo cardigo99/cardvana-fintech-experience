@@ -1,3 +1,7 @@
+import { BrandCard } from "./brand-card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
 // Import logos
 import amazonLogo from "@/assets/logos/amazon.svg";
 import appleLogo from "@/assets/logos/apple.png";
@@ -14,6 +18,24 @@ import airbnbLogo from "@/assets/logos/airbnb.svg";
 import transcashLogo from "@/assets/logos/transcash.png";
 import pcsLogo from "@/assets/logos/pcs.png";
 import paysafecardLogo from "@/assets/logos/paysafecard.png";
+
+const brands = [
+  { name: "Amazon", logo: amazonLogo, color: "#232F3E", isImage: true },
+  { name: "Nike", logo: nikeLogo, color: "#FF6B35", textColor: "white", isImage: true },
+  { name: "Sephora", logo: sephoraLogo, color: "#000000", isImage: true },
+  { name: "Auchan", logo: auchanLogo, color: "#E31E24", isImage: true },
+  { name: "Decathlon", logo: decathlonLogo, color: "#0082C3", isImage: true },
+  { name: "Apple", logo: appleLogo, color: "#000000", isImage: true },
+  { name: "Fnac", logo: fnacLogo, color: "#E1A13A", isImage: true },
+  { name: "Zalando", logo: zalandoLogo, color: "#FF6900", isImage: true },
+  { name: "PlayStation", logo: playstationLogo, color: "#003791", isImage: true },
+  { name: "Samsung", logo: samsungLogo, color: "#1428A0", isImage: true },
+  { name: "Uber", logo: uberLogo, color: "#000000", isImage: true },
+  { name: "Airbnb", logo: airbnbLogo, color: "#FF5A5F", isImage: true },
+  { name: "Transcash", logo: transcashLogo, color: "#2E8B57", isImage: true },
+  { name: "PCS", logo: pcsLogo, color: "#1F4E79", isImage: true },
+  { name: "Paysafecard", logo: paysafecardLogo, color: "#00A651", isImage: true },
+];
 
 export const CardsSection = () => {
   return (
@@ -32,21 +54,21 @@ export const CardsSection = () => {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
-          <img src={amazonLogo} alt="Amazon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={nikeLogo} alt="Nike" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={sephoraLogo} alt="Sephora" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={auchanLogo} alt="Auchan" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={decathlonLogo} alt="Decathlon" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={appleLogo} alt="Apple" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={fnacLogo} alt="Fnac" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={zalandoLogo} alt="Zalando" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={playstationLogo} alt="PlayStation" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={samsungLogo} alt="Samsung" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={uberLogo} alt="Uber" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={airbnbLogo} alt="Airbnb" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={transcashLogo} alt="Transcash" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={pcsLogo} alt="PCS" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
-          <img src={paysafecardLogo} alt="Paysafecard" className="w-full h-auto max-w-32 mx-auto hover:scale-105 transition-transform duration-300" />
+          {brands.map((brand, index) => (
+            <div 
+              key={brand.name}
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <BrandCard
+                name={brand.name}
+                logo={brand.logo}
+                color={brand.color}
+                textColor={brand.textColor}
+                isImage={brand.isImage}
+              />
+            </div>
+          ))}
         </div>
         
       </div>
