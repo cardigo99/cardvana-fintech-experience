@@ -32,7 +32,7 @@ export const BrandCard = ({
           <img 
             src={logo} 
             alt={`${name} logo`}
-            className="w-16 h-16 object-contain mb-4"
+            className="w-20 h-20 object-contain mb-4"
           />
         ) : (
           <div className="text-6xl mb-4" style={{ color: textColor }}>
