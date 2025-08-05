@@ -22,21 +22,24 @@ export const BrandCard = ({
     <div className="flex flex-col items-center group">
       <Card 
         className={cn(
-          "relative cursor-pointer overflow-hidden border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 w-full aspect-square",
+          "relative cursor-pointer overflow-hidden border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 w-20 h-20",
           className
         )}
         style={{ backgroundColor: color }}
       >
-        <div className="h-full flex items-center justify-center p-4">
+        <div className="h-full flex items-center justify-center p-2">
           {/* Brand Logo/Icon */}
           {isImage ? (
             <img 
               src={logo} 
               alt={`${name} logo`}
-              className="w-28 h-28 object-contain"
+              className={cn(
+                "object-contain",
+                name === "Paysafecard" ? "w-16 h-16" : "w-12 h-12"
+              )}
             />
           ) : (
-            <div className="text-7xl" style={{ color: textColor }}>
+            <div className="text-4xl" style={{ color: textColor }}>
               {logo}
             </div>
           )}
@@ -52,7 +55,7 @@ export const BrandCard = ({
       </Card>
       
       {/* Brand Name outside the card */}
-      <h3 className="text-base font-semibold tracking-wide text-center mt-3 text-foreground">
+      <h3 className="text-sm font-semibold tracking-wide text-center mt-2 text-foreground">
         {name}
       </h3>
     </div>

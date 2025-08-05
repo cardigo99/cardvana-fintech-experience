@@ -3,11 +3,11 @@ import { BrandCard } from "@/components/brand-card";
 export const CardsSection = () => {
   const brands = [
     { name: "Amazon", logo: "/lovable-uploads/506a8cf4-4173-4136-8112-01665a8a31be.png", color: "hsl(0, 0%, 95%)" },
-    { name: "Nike", logo: "/src/assets/logos/nike-clean.png", color: "hsl(0, 0%, 95%)" },
+    { name: "Nike", logo: "/src/assets/logos/nike.svg", color: "hsl(0, 0%, 95%)" },
     { name: "Sephora", logo: "/src/assets/logos/sephora.png", color: "hsl(0, 0%, 95%)" },
     { name: "Auchan", logo: "/lovable-uploads/a0843980-93a2-4054-9177-3a52e55bde5a.png", color: "hsl(0, 0%, 95%)" },
     { name: "Decathlon", logo: "/lovable-uploads/5ffa54bf-4bab-45da-a30e-2f9cab2ef77f.png", color: "hsl(0, 0%, 95%)" },
-    { name: "Apple", logo: "/src/assets/logos/apple.png", color: "hsl(0, 0%, 95%)" },
+    { name: "Apple", logo: "/src/assets/logos/apple.svg", color: "hsl(0, 0%, 95%)" },
     { name: "Fnac", logo: "/lovable-uploads/f55d6a71-ef59-4a09-a9a7-dce1e8b3a4f5.png", color: "hsl(0, 0%, 95%)" },
     { name: "Zalando", logo: "/lovable-uploads/ae46c9f1-e8b3-4d26-acda-fc827e65ef80.png", color: "hsl(0, 0%, 95%)" },
     { name: "PlayStation", logo: "/lovable-uploads/340c09f1-3a7e-4515-8eac-6f523c02309a.png", color: "hsl(0, 0%, 95%)" },
@@ -34,7 +34,7 @@ export const CardsSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-3 gap-4 max-w-4xl mx-auto">
           {brands.map((brand, index) => (
             <BrandCard 
               key={index}
