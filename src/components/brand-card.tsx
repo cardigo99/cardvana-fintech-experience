@@ -26,23 +26,23 @@ export const BrandCard = ({
       )}
       style={{ backgroundColor: color }}
     >
-      <div className="aspect-[3/2] flex flex-col items-center justify-center p-6">
+      <div className="aspect-square flex flex-col items-center justify-center p-4">
         {/* Brand Logo/Icon */}
         {isImage ? (
           <img 
             src={logo} 
             alt={`${name} logo`}
-            className="w-20 h-20 object-contain mb-4"
+            className="w-24 h-24 object-contain mb-3"
           />
         ) : (
-          <div className="text-6xl mb-4" style={{ color: textColor }}>
+          <div className="text-7xl mb-3" style={{ color: textColor }}>
             {logo}
           </div>
         )}
         
         {/* Brand Name */}
         <h3 
-          className="text-lg font-semibold tracking-wide"
+          className="text-base font-semibold tracking-wide text-center"
           style={{ color: textColor }}
         >
           {name}
