@@ -22,7 +22,7 @@ export const BrandCard = ({
     <div className="flex flex-col items-center group">
       <Card 
         className={cn(
-          "relative cursor-pointer overflow-hidden border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 w-20 h-20",
+          "relative cursor-pointer overflow-hidden border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 w-28 h-24",
           className
         )}
         style={{ backgroundColor: color }}
@@ -35,7 +35,7 @@ export const BrandCard = ({
               alt={`${name} logo`}
               className={cn(
                 "object-contain",
-                name === "Paysafecard" ? "w-16 h-16" : "w-12 h-12"
+                name === "Paysafecard" ? "w-20 h-20" : "w-16 h-16"
               )}
             />
           ) : (
