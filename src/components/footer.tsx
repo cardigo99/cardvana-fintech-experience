@@ -11,7 +11,6 @@ export const Footer = () => {
       "Contact"
     ],
     "Entreprise": [
-      "À propos"
     ],
     "Légal": [
       "Conditions générales",
