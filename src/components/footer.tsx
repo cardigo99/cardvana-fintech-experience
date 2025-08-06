@@ -10,8 +10,6 @@ export const Footer = () => {
       "Centre d'aide",
       "Contact"
     ],
-    "Entreprise": [
-    ],
     "Légal": [
       "Conditions générales",
       "Politique de remboursement", 
