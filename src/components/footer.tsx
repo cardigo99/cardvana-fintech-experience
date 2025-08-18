@@ -57,7 +57,10 @@ export const Footer = () => {
                   {links.map((link) => (
                     <li key={link}>
                       <a 
-                        href={link === "Politique de remboursement" ? "/politique-de-remboursement" : "#"} 
+                        href={
+                          link === "Politique de remboursement" ? "/politique-de-remboursement" :
+                          link === "Conditions générales" ? "/conditions-generales" : "#"
+                        } 
                         className="text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {link}
