@@ -59,8 +59,9 @@ export const Footer = () => {
                       <a 
                         href={
                           link === "Politique de remboursement" ? "/politique-de-remboursement" :
-                          link === "Politique de réclamation" ? "/politique-de-reclamation" : "#"
-                        } 
+                          link === "Politique de réclamation" ? "/politique-de-reclamation" :
+                          link === "Cookies" ? "/cookies" : "#"
+                        }
                         className="text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {link}
