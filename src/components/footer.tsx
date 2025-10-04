@@ -6,9 +6,6 @@ import { Mail } from "lucide-react";
 
 export const Footer = () => {
   const footerLinks = {
-    "Support": [
-      "Centre d'aide"
-    ],
     "Légal": [
       "Conditions générales",
       "Politique de remboursement", 
