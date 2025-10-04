@@ -9,7 +9,7 @@ export const Navigation = () => {
 
   const navItems = [
     { label: "Accueil", href: "/" },
-    { label: "Contact", href: "#contact" },
+    { label: "Contact", href: "/contact" },
   ];
 
   return (
