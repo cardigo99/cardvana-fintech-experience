@@ -7,7 +7,7 @@ interface LogoProps {
 
 export const Logo = ({ className, showText = true }: LogoProps) => {
   return (
-    <div className={cn("flex items-center space-x-3", className)}>
+    <a href="/" className={cn("flex items-center space-x-3 cursor-pointer", className)}>
       <div className="relative">
         <div className="w-10 h-10 gradient-cta rounded-lg flex items-center justify-center shadow-glow">
           {/* Carte minimaliste */}
@@ -30,6 +30,6 @@ export const Logo = ({ className, showText = true }: LogoProps) => {
           Cardvana
         </span>
       )}
-    </div>
+    </a>
   );
 };
