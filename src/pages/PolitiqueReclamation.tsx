@@ -7,7 +7,7 @@ const PolitiqueReclamation = () => {
       <Navigation />
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-foreground mb-8">Politique de réclamation</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-8 text-center">Politique de réclamation</h1>
           
           <div className="space-y-8 text-muted-foreground">
             <section>

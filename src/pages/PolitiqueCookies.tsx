@@ -8,7 +8,7 @@ const PolitiqueCookies = () => {
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <header className="mb-12">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl font-bold text-foreground mb-4 text-center">
               Politique de Cookies
             </h1>
             <p className="text-xl text-muted-foreground">
