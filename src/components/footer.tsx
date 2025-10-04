@@ -1,8 +1,5 @@
 import { Logo } from "@/components/ui/logo";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Mail } from "lucide-react";
 
 export const Footer = () => {
   const footerLinks = {
@@ -30,20 +27,6 @@ export const Footer = () => {
                 Cardvana révolutionne la gestion des cartes cadeaux avec une plateforme 
                 moderne, sécurisée et intuitive.
               </p>
-              
-              {/* Newsletter */}
-              <div className="space-y-3">
-                <h4 className="font-semibold text-foreground">Newsletter</h4>
-                <div className="flex space-x-2">
-                  <Input 
-                    placeholder="votre@email.com" 
-                    className="flex-1"
-                  />
-                  <Button size="icon">
-                    <Mail className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
             </div>
             
             {/* Links Sections */}
