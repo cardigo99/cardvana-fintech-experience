@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   id: string;
@@ -17,6 +17,7 @@ interface CartItem {
 }
 
 const Panier = () => {
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: "1",
@@ -44,7 +45,6 @@ const Panier = () => {
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal;
-  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -61,7 +61,7 @@ const Panier = () => {
                 Ajoutez des cartes cadeaux pour commencer vos achats
               </p>
               <Button asChild>
-                <Link to="/">Découvrir nos cartes</Link>
+                <a href="/">Découvrir nos cartes</a>
               </Button>
             </Card>
           ) : (
@@ -135,15 +135,15 @@ const Panier = () => {
                       <span>{total.toFixed(2)}€</span>
                     </div>
                   </div>
-                  <Button
-                    className="w-full mt-6"
+                  <Button 
+                    className="w-full mt-6" 
                     size="lg"
                     onClick={() => navigate("/paiement-crypto", { state: { total } })}
                   >
                     Procéder au paiement
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
-                    <Link to="/">Continuer mes achats</Link>
+                    <a href="/">Continuer mes achats</a>
                   </Button>
                 </Card>
               </div>
