@@ -133,8 +133,8 @@ const Panier = () => {
                       <span>{total.toFixed(2)}€</span>
                     </div>
                   </div>
-                  <Button className="w-full mt-6" size="lg" asChild>
-                    <a href="/paiement-crypto">Procéder au paiement</a>
+                  <Button className="w-full mt-6" size="lg">
+                    Procéder au paiement
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
                     <a href="/">Continuer mes achats</a>
