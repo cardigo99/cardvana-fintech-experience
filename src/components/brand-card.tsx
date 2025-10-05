@@ -8,6 +8,7 @@ interface BrandCardProps {
   textColor?: string;
   className?: string;
   isImage?: boolean;
+  onClick?: () => void;
 }
 
 export const BrandCard = ({ 
@@ -16,7 +17,8 @@ export const BrandCard = ({
   color, 
   textColor = "white",
   className,
-  isImage = false
+  isImage = false,
+  onClick
 }: BrandCardProps) => {
   return (
     <div className="flex flex-col items-center group">
@@ -26,6 +28,7 @@ export const BrandCard = ({
           className
         )}
         style={{ backgroundColor: color }}
+        onClick={onClick}
       >
         <div className="h-full flex items-center justify-center p-2">
           {/* Brand Logo/Icon */}

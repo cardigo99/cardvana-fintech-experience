@@ -1,6 +1,19 @@
 import { BrandCard } from "@/components/brand-card";
+import { addToCart } from "@/lib/cart";
+import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const CardsSection = () => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (brand: string, logo: string) => {
+    addToCart(brand, logo);
+    toast({
+      title: "Ajouté au panier",
+      description: `Carte cadeau ${brand} ajoutée (1000 €)`,
+    });
+    navigate("/panier");
+  };
   const brands = [
     { name: "Amazon", logo: "/lovable-uploads/506a8cf4-4173-4136-8112-01665a8a31be.png", color: "hsl(0, 0%, 95%)" },
     { name: "Nike", logo: "/src/assets/logos/nike.svg", color: "hsl(0, 0%, 95%)" },
@@ -42,6 +55,7 @@ export const CardsSection = () => {
               logo={brand.logo}
               color={brand.color}
               isImage={true}
+              onClick={() => handleCardClick(brand.name, brand.logo)}
             />
           ))}
         </div>

@@ -4,41 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { useState } from "react";
-
-interface CartItem {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { useState, useEffect } from "react";
+import { getCart, saveCart, updateCartItemQuantity, removeFromCart, CartItem } from "@/lib/cart";
 
 const Panier = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Carte cadeau",
-      brand: "Amazon",
-      price: 50,
-      quantity: 1,
-      image: "/lovable-uploads/a0843980-93a2-4054-9177-3a52e55bde5a.png"
-    }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    setCartItems(getCart());
+  }, []);
 
   const updateQuantity = (id: string, change: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
-      )
-    );
+    updateCartItemQuantity(id, change);
+    setCartItems(getCart());
   };
 
   const removeItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id));
+    removeFromCart(id);
+    setCartItems(getCart());
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
