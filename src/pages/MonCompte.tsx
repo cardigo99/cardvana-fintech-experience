@@ -9,13 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { User, ShoppingBag, Settings, LogOut, Eye, Package, Calendar, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { getUserOrders, Order } from "@/lib/orders";
 
 const MonCompte = () => {
   const { toast } = useToast();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
   
   // État pour les informations du profil
   const [profileData, setProfileData] = useState({
@@ -33,10 +35,18 @@ const MonCompte = () => {
   });
 
   // États pour les modales
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+
+  // Charger les commandes de l'utilisateur
+  useEffect(() => {
+    if (user) {
+      const userOrders = getUserOrders(user.id);
+      setOrders(userOrders);
+    }
+  }, [user]);
 
   const handleProfileChange = (field: string, value: string) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -126,36 +136,10 @@ const MonCompte = () => {
     }, 2000);
   };
 
-  const handleViewOrderDetails = (order: any) => {
+  const handleViewOrderDetails = (order: Order) => {
     setSelectedOrder(order);
     setIsOrderDetailsOpen(true);
   };
-  const mockOrders = [
-    {
-      id: "CMD001",
-      date: "15 janvier 2024",
-      brand: "Amazon",
-      amount: 50,
-      status: "Livré",
-      paymentMethod: "Crypto (USDT)",
-      transactionId: "0x1234...5678",
-      cardValue: "50€",
-      deliveryEmail: "jean.dupont@example.com",
-      code: "AMZN-1234-5678-9012"
-    },
-    {
-      id: "CMD002",
-      date: "10 janvier 2024",
-      brand: "Netflix",
-      amount: 25,
-      status: "Livré",
-      paymentMethod: "Crypto (USDT)",
-      transactionId: "0xabcd...efgh",
-      cardValue: "25€",
-      deliveryEmail: "jean.dupont@example.com",
-      code: "NFLX-9876-5432-1098"
-    }
-  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -240,32 +224,35 @@ const MonCompte = () => {
               <Card className="p-6">
                 <h2 className="text-2xl font-semibold mb-6">Historique des commandes</h2>
                 <div className="space-y-4">
-                  {mockOrders.map((order) => (
-                    <Card key={order.id} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold">Commande #{order.id}</h3>
-                            <span className="text-sm px-2 py-1 bg-green-500/10 text-green-500 rounded-full">
-                              {order.status}
-                            </span>
+                  {orders.map((order) => {
+                    const statusColor = order.status === 'Livré' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500';
+                    return (
+                      <Card key={order.id} className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="font-semibold">Commande #{order.id}</h3>
+                              <span className={`text-sm px-2 py-1 rounded-full ${statusColor}`}>
+                                {order.status}
+                              </span>
+                            </div>
+                            <p className="text-muted-foreground text-sm">
+                              {order.date} • {order.items.length} article(s) • {order.total.toFixed(2)}€
+                            </p>
                           </div>
-                          <p className="text-muted-foreground text-sm">
-                            {order.date} • {order.brand} • {order.amount}€
-                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleViewOrderDetails(order)}
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            Voir détails
+                          </Button>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleViewOrderDetails(order)}
-                        >
-                          <Eye className="w-4 h-4 mr-2" />
-                          Voir détails
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
-                  {mockOrders.length === 0 && (
+                      </Card>
+                    );
+                  })}
+                  {orders.length === 0 && (
                     <div className="text-center py-12">
                       <ShoppingBag className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                       <p className="text-muted-foreground">Aucune commande pour le moment</p>
@@ -361,7 +348,9 @@ const MonCompte = () => {
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">Statut</p>
-                  <span className="inline-flex items-center px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-sm font-medium">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    selectedOrder.status === 'Livré' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'
+                  }`}>
                     {selectedOrder.status}
                   </span>
                 </div>
@@ -370,14 +359,17 @@ const MonCompte = () => {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="font-semibold">Produit</h3>
-                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                  <div>
-                    <p className="font-medium">{selectedOrder.brand}</p>
-                    <p className="text-sm text-muted-foreground">Carte cadeau</p>
+                <h3 className="font-semibold">Produits commandés</h3>
+                {selectedOrder.items.map((item, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                    <div>
+                      <p className="font-medium">{item.brand}</p>
+                      <p className="text-sm text-muted-foreground">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">Quantité: {item.quantity}</p>
+                    </div>
+                    <p className="text-lg font-bold">{item.price}€</p>
                   </div>
-                  <p className="text-xl font-bold">{selectedOrder.cardValue}</p>
-                </div>
+                ))}
               </div>
 
               <Separator />
@@ -396,38 +388,34 @@ const MonCompte = () => {
                     <span className="text-muted-foreground">ID Transaction</span>
                     <span className="font-mono text-sm">{selectedOrder.transactionId}</span>
                   </div>
+                  <Separator />
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Montant payé</span>
-                    <span className="font-semibold">{selectedOrder.amount} USDT</span>
+                    <span className="text-muted-foreground">Sous-total</span>
+                    <span>{selectedOrder.subtotal.toFixed(2)}€</span>
+                  </div>
+                  {selectedOrder.discount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Réduction ({selectedOrder.promoCode})</span>
+                      <span>-{selectedOrder.discount.toFixed(2)}€</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-semibold text-lg">
+                    <span>Total payé</span>
+                    <span>{selectedOrder.total.toFixed(2)}€</span>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
-              <div className="space-y-4">
-                <h3 className="font-semibold">Code de la carte cadeau</h3>
-                <div className="p-4 bg-primary/5 border-2 border-primary/20 rounded-lg">
-                  <p className="text-center font-mono text-lg font-bold tracking-wider">
-                    {selectedOrder.code}
-                  </p>
-                </div>
-                <p className="text-sm text-muted-foreground text-center">
-                  Ce code a été envoyé à {selectedOrder.deliveryEmail}
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                  📧 Les codes des cartes cadeaux vous seront envoyés par email une fois le paiement validé.
                 </p>
               </div>
 
               <div className="flex gap-2">
-                <Button className="flex-1" onClick={() => {
-                  navigator.clipboard.writeText(selectedOrder.code);
-                  toast({
-                    title: "Code copié",
-                    description: "Le code a été copié dans le presse-papiers",
-                  });
-                }}>
-                  Copier le code
-                </Button>
-                <Button variant="outline" onClick={() => setIsOrderDetailsOpen(false)}>
+                <Button variant="outline" className="flex-1" onClick={() => setIsOrderDetailsOpen(false)}>
                   Fermer
                 </Button>
               </div>

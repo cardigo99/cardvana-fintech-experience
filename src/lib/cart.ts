@@ -54,3 +54,8 @@ export const removeFromCart = (id: string): void => {
   const cart = getCart();
   saveCart(cart.filter(item => item.id !== id));
 };
+
+export const clearCart = (): void => {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(CART_STORAGE_KEY);
+};

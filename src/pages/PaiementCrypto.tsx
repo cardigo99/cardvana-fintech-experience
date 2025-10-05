@@ -9,9 +9,13 @@ import { Copy, CheckCircle2, ArrowLeft, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { getCart, clearCart } from "@/lib/cart";
+import { saveOrder } from "@/lib/orders";
 
 const PaiementCrypto = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [copied, setCopied] = useState(false);
   const walletAddress = "0x1234567890ABCDEF1234567890ABCDEF12345678";
   
@@ -47,10 +51,47 @@ const PaiementCrypto = () => {
   };
 
   const handlePaymentConfirm = () => {
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour effectuer un paiement",
+        variant: "destructive"
+      });
+      navigate("/auth");
+      return;
+    }
+
     toast({
       title: "Paiement en cours de vérification",
       description: "Nous vérifions votre transaction...",
     });
+    
+    // Récupérer les articles du panier
+    const cartItems = getCart();
+    
+    // Sauvegarder la commande
+    const order = saveOrder(user.id, {
+      items: cartItems.map(item => ({
+        brand: item.brand,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
+      subtotal: paymentDetails.subtotal,
+      discount: paymentDetails.discount,
+      promoCode: paymentDetails.promoCode,
+      total: paymentDetails.amount,
+      paymentMethod: "Crypto (USDT)"
+    });
+    
+    // Vider le panier
+    clearCart();
+    
+    // Nettoyer les données de paiement
+    localStorage.removeItem('payment_amount');
+    localStorage.removeItem('payment_subtotal');
+    localStorage.removeItem('payment_discount');
+    localStorage.removeItem('payment_promo');
     
     // Simulation de vérification
     setTimeout(() => {
