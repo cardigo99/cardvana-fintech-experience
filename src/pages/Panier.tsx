@@ -3,12 +3,16 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, Tag } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCart, saveCart, updateCartItemQuantity, removeFromCart, CartItem } from "@/lib/cart";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 
 const Panier = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number } | null>(null);
 
   useEffect(() => {
     setCartItems(getCart());
@@ -24,8 +28,32 @@ const Panier = () => {
     setCartItems(getCart());
   };
 
+  const applyPromoCode = () => {
+    const validCodes: Record<string, number> = {
+      "BIENVENUE": 10,
+      "PROMO20": 20,
+      "VIP30": 30
+    };
+
+    const code = promoCode.trim().toUpperCase();
+    if (validCodes[code]) {
+      setAppliedPromo({ code, discount: validCodes[code] });
+      toast({
+        title: "Code promo appliqué !",
+        description: `Vous bénéficiez de ${validCodes[code]}% de réduction`,
+      });
+    } else {
+      toast({
+        title: "Code invalide",
+        description: "Ce code promo n'existe pas",
+        variant: "destructive"
+      });
+    }
+  };
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const total = subtotal;
+  const discount = appliedPromo ? (subtotal * appliedPromo.discount) / 100 : 0;
+  const total = subtotal - discount;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -105,11 +133,49 @@ const Panier = () => {
               <div>
                 <Card className="p-6 sticky top-4">
                   <h2 className="text-xl font-semibold mb-4">Résumé</h2>
+                  
+                  {/* Promo Code Section */}
+                  <div className="mb-4 space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                      <Tag className="h-4 w-4" />
+                      Code promo
+                    </label>
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        placeholder="Entrez votre code"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button 
+                        variant="outline" 
+                        onClick={applyPromoCode}
+                        disabled={!promoCode.trim()}
+                      >
+                        Appliquer
+                      </Button>
+                    </div>
+                    {appliedPromo && (
+                      <p className="text-sm text-green-600 font-medium">
+                        Code "{appliedPromo.code}" appliqué (-{appliedPromo.discount}%)
+                      </p>
+                    )}
+                  </div>
+
+                  <Separator className="my-4" />
+
                   <div className="space-y-3">
                     <div className="flex justify-between text-muted-foreground">
                       <span>Sous-total</span>
                       <span>{subtotal.toFixed(2)}€</span>
                     </div>
+                    {appliedPromo && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Réduction (-{appliedPromo.discount}%)</span>
+                        <span>-{discount.toFixed(2)}€</span>
+                      </div>
+                    )}
                     <Separator />
                     <div className="flex justify-between text-lg font-semibold">
                       <span>Total</span>
