@@ -6,7 +6,7 @@ export const AboutSection = () => {
     {
       icon: Clock,
       title: "Livraison instantanée",
-      description: "Recevez vos cartes cadeaux par email en moins de 30 secondes"
+      description: "Recevez vos cartes cadeaux par email en 1 minute"
     },
     {
       icon: Shield,
