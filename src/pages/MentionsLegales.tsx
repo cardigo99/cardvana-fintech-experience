@@ -5,7 +5,7 @@ const MentionsLegales = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-1 container mx-auto px-4 py-16">
+      <main className="flex-1 container mx-auto px-4 py-24">
         <article className="max-w-4xl mx-auto space-y-8">
           <h1 className="text-4xl font-bold text-center mb-8">Mentions légales</h1>
           

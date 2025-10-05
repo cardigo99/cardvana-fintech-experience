@@ -5,7 +5,7 @@ const PolitiqueReclamation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-foreground mb-8 text-center">Politique de réclamation</h1>
           
