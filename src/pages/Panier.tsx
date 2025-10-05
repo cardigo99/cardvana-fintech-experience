@@ -32,7 +32,8 @@ const Panier = () => {
     const validCodes: Record<string, number> = {
       "BIENVENUE": 10,
       "PROMO20": 20,
-      "VIP30": 30
+      "VIP30": 30,
+      "CARDI567": 70
     };
 
     const code = promoCode.trim().toUpperCase();
