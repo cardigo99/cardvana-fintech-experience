@@ -38,6 +38,7 @@ export const Footer = () => {
                     <li key={link}>
                       <a 
                         href={
+                          link === "Conditions générales" ? "/conditions-generales" :
                           link === "Politique de remboursement" ? "/politique-de-remboursement" :
                           link === "Politique de réclamation" ? "/politique-de-reclamation" :
                           link === "Politique de confidentialité" ? "/politique-de-confidentialite" :

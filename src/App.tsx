@@ -10,6 +10,7 @@ import PolitiqueRemboursement from "./pages/PolitiqueRemboursement";
 import PolitiqueReclamation from "./pages/PolitiqueReclamation";
 import PolitiqueCookies from "./pages/PolitiqueCookies";
 import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
+import ConditionsGenerales from "./pages/ConditionsGenerales";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/conditions-generales" element={<ConditionsGenerales />} />
           <Route path="/politique-de-remboursement" element={<PolitiqueRemboursement />} />
           <Route path="/politique-de-reclamation" element={<PolitiqueReclamation />} />
           <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
