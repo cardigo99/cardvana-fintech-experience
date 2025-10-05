@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { getCart, clearCart } from "@/lib/cart";
 import { saveOrder } from "@/lib/orders";
+import walletQR from "@/assets/wallet-qr.jpeg";
 
 const PaiementCrypto = () => {
   const navigate = useNavigate();
@@ -182,6 +183,22 @@ const PaiementCrypto = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Copiez cette adresse et envoyez exactement {paymentDetails.amount.toFixed(2)} € en USDT depuis votre portefeuille crypto
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label>Scanner le QR Code</Label>
+                  <div className="flex justify-center p-4 bg-white rounded-lg">
+                    <img 
+                      src={walletQR} 
+                      alt="QR Code du portefeuille" 
+                      className="w-48 h-48 object-contain"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Scannez ce QR code avec votre application crypto pour payer rapidement
                   </p>
                 </div>
 
