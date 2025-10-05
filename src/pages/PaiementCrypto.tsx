@@ -17,7 +17,7 @@ const PaiementCrypto = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
-  const walletAddress = "0x1234567890ABCDEF1234567890ABCDEF12345678";
+  const walletAddress = "0x37B70E97244EAcfBA47EAc8b27Adb1536C808FfC";
   
   const [paymentDetails, setPaymentDetails] = useState({
     amount: 0,
