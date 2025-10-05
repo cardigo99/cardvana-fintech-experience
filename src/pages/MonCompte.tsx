@@ -7,8 +7,109 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, ShoppingBag, Settings, LogOut } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const MonCompte = () => {
+  const { toast } = useToast();
+  
+  // État pour les informations du profil
+  const [profileData, setProfileData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: ""
+  });
+
+  // État pour le changement de mot de passe
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+
+  const handleProfileChange = (field: string, value: string) => {
+    setProfileData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handlePasswordChange = (field: string, value: string) => {
+    setPasswordData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveProfile = () => {
+    // Validation simple
+    if (!profileData.firstName || !profileData.lastName || !profileData.email) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Sauvegarder dans le localStorage
+    localStorage.setItem("userProfile", JSON.stringify(profileData));
+    
+    toast({
+      title: "Profil mis à jour",
+      description: "Vos informations ont été enregistrées avec succès",
+    });
+  };
+
+  const handleChangePassword = () => {
+    // Validation
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      toast({
+        title: "Erreur",
+        description: "Le mot de passe doit contenir au moins 8 caractères",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Réinitialiser le formulaire
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    });
+
+    toast({
+      title: "Mot de passe modifié",
+      description: "Votre mot de passe a été changé avec succès",
+    });
+  };
+
+  const handleDeleteAccount = () => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.")) {
+      toast({
+        title: "Compte supprimé",
+        description: "Votre compte a été supprimé avec succès",
+      });
+      // Redirection après suppression
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    }
+  };
   const mockOrders = [
     {
       id: "CMD001",
@@ -61,24 +162,46 @@ const MonCompte = () => {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">Prénom</Label>
-                      <Input id="firstName" placeholder="Jean" />
+                      <Label htmlFor="firstName">Prénom *</Label>
+                      <Input 
+                        id="firstName" 
+                        placeholder="Jean"
+                        value={profileData.firstName}
+                        onChange={(e) => handleProfileChange("firstName", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">Nom</Label>
-                      <Input id="lastName" placeholder="Dupont" />
+                      <Label htmlFor="lastName">Nom *</Label>
+                      <Input 
+                        id="lastName" 
+                        placeholder="Dupont"
+                        value={profileData.lastName}
+                        onChange={(e) => handleProfileChange("lastName", e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="jean.dupont@example.com" />
+                    <Label htmlFor="email">Email *</Label>
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="jean.dupont@example.com"
+                      value={profileData.email}
+                      onChange={(e) => handleProfileChange("email", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Téléphone</Label>
-                    <Input id="phone" type="tel" placeholder="+33 6 12 34 56 78" />
+                    <Input 
+                      id="phone" 
+                      type="tel" 
+                      placeholder="+33 6 12 34 56 78"
+                      value={profileData.phone}
+                      onChange={(e) => handleProfileChange("phone", e.target.value)}
+                    />
                   </div>
                   <Separator />
-                  <Button>Enregistrer les modifications</Button>
+                  <Button onClick={handleSaveProfile}>Enregistrer les modifications</Button>
                 </div>
               </Card>
             </TabsContent>
@@ -126,17 +249,32 @@ const MonCompte = () => {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="currentPassword">Mot de passe actuel</Label>
-                        <Input id="currentPassword" type="password" />
+                        <Input 
+                          id="currentPassword" 
+                          type="password"
+                          value={passwordData.currentPassword}
+                          onChange={(e) => handlePasswordChange("currentPassword", e.target.value)}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="newPassword">Nouveau mot de passe</Label>
-                        <Input id="newPassword" type="password" />
+                        <Input 
+                          id="newPassword" 
+                          type="password"
+                          value={passwordData.newPassword}
+                          onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
-                        <Input id="confirmPassword" type="password" />
+                        <Input 
+                          id="confirmPassword" 
+                          type="password"
+                          value={passwordData.confirmPassword}
+                          onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
+                        />
                       </div>
-                      <Button>Modifier le mot de passe</Button>
+                      <Button onClick={handleChangePassword}>Modifier le mot de passe</Button>
                     </div>
                   </div>
                   <Separator />
@@ -145,7 +283,7 @@ const MonCompte = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       La suppression de votre compte est permanente et irréversible.
                     </p>
-                    <Button variant="destructive">Supprimer mon compte</Button>
+                    <Button variant="destructive" onClick={handleDeleteAccount}>Supprimer mon compte</Button>
                   </div>
                 </div>
               </Card>
