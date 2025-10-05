@@ -17,6 +17,7 @@ import Panier from "./pages/Panier";
 import MonCompte from "./pages/MonCompte";
 import ConfirmationCommande from "./pages/ConfirmationCommande";
 import ConfirmationMessage from "./pages/ConfirmationMessage";
+import PaiementCrypto from "./pages/PaiementCrypto";
 import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/panier" element={<Panier />} />
+            <Route path="/paiement-crypto" element={<PaiementCrypto />} />
             <Route path="/mon-compte" element={<MonCompte />} />
             <Route path="/confirmation-commande" element={<ConfirmationCommande />} />
             <Route path="/confirmation-message" element={<ConfirmationMessage />} />
