@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
@@ -8,6 +9,13 @@ import { useAuth } from "@/hooks/use-auth";
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    navigate('/');
+  };
 
   const navItems = [
     { label: "Accueil", href: "/" },
@@ -48,7 +56,7 @@ export const Navigation = () => {
               </a>
             </Button>
             {user ? (
-              <Button onClick={logout} variant="outline">
+              <Button onClick={handleLogout} variant="outline">
                 <LogOut className="w-4 h-4 mr-2" />
                 Déconnexion
               </Button>
@@ -92,7 +100,7 @@ export const Navigation = () => {
                     </a>
                   </Button>
                   {user ? (
-                    <Button onClick={() => { logout(); setIsOpen(false); }} variant="outline" className="justify-start">
+                    <Button onClick={handleLogout} variant="outline" className="justify-start">
                       <LogOut className="w-4 h-4 mr-2" />
                       Déconnexion
                     </Button>
