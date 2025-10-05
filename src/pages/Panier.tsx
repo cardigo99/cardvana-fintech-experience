@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 interface CartItem {
   id: string;
@@ -61,7 +61,7 @@ const Panier = () => {
                 Ajoutez des cartes cadeaux pour commencer vos achats
               </p>
               <Button asChild>
-                <a href="/">Découvrir nos cartes</a>
+                <Link to="/">Découvrir nos cartes</Link>
               </Button>
             </Card>
           ) : (
@@ -143,7 +143,7 @@ const Panier = () => {
                     Procéder au paiement
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
-                    <a href="/">Continuer mes achats</a>
+                    <Link to="/">Continuer mes achats</Link>
                   </Button>
                 </Card>
               </div>
