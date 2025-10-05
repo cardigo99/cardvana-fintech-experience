@@ -14,6 +14,7 @@ import ConditionsGenerales from "./pages/ConditionsGenerales";
 import MentionsLegales from "./pages/MentionsLegales";
 import Panier from "./pages/Panier";
 import MonCompte from "./pages/MonCompte";
+import PaiementCrypto from "./pages/PaiementCrypto";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/panier" element={<Panier />} />
+          <Route path="/paiement-crypto" element={<PaiementCrypto />} />
           <Route path="/mon-compte" element={<MonCompte />} />
           <Route path="/conditions-generales" element={<ConditionsGenerales />} />
           <Route path="/politique-de-remboursement" element={<PolitiqueRemboursement />} />

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   id: string;
@@ -43,6 +44,7 @@ const Panier = () => {
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal;
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -133,7 +135,11 @@ const Panier = () => {
                       <span>{total.toFixed(2)}€</span>
                     </div>
                   </div>
-                  <Button className="w-full mt-6" size="lg">
+                  <Button
+                    className="w-full mt-6"
+                    size="lg"
+                    onClick={() => navigate("/paiement-crypto", { state: { total } })}
+                  >
                     Procéder au paiement
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
