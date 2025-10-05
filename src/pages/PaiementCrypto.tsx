@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Copy, CheckCircle2, ArrowLeft, Wallet } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
@@ -14,7 +14,27 @@ const PaiementCrypto = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const walletAddress = "0x1234567890ABCDEF1234567890ABCDEF12345678";
-  const amount = 50; // Montant à payer en USDT
+  
+  const [paymentDetails, setPaymentDetails] = useState({
+    amount: 0,
+    subtotal: 0,
+    discount: 0,
+    promoCode: ""
+  });
+
+  useEffect(() => {
+    const amount = parseFloat(localStorage.getItem('payment_amount') || '0');
+    const subtotal = parseFloat(localStorage.getItem('payment_subtotal') || '0');
+    const discount = parseFloat(localStorage.getItem('payment_discount') || '0');
+    const promoCode = localStorage.getItem('payment_promo') || '';
+    
+    if (amount === 0) {
+      navigate("/panier");
+      return;
+    }
+    
+    setPaymentDetails({ amount, subtotal, discount, promoCode });
+  }, [navigate]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(walletAddress);
@@ -68,14 +88,32 @@ const PaiementCrypto = () => {
 
             <Card className="p-6 space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Montant à payer</p>
-                    <p className="text-3xl font-bold">{amount} USDT</p>
+                <div className="p-4 bg-muted rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Sous-total</p>
+                      <p className="text-2xl font-bold">{paymentDetails.subtotal.toFixed(2)} €</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">Réseau</p>
+                      <p className="font-semibold">ERC-20 (Ethereum)</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Réseau</p>
-                    <p className="font-semibold">ERC-20 (Ethereum)</p>
+                  {paymentDetails.discount > 0 && (
+                    <>
+                      <Separator />
+                      <div className="flex justify-between text-green-600">
+                        <span className="text-sm">
+                          Réduction ({paymentDetails.promoCode})
+                        </span>
+                        <span className="font-semibold">-{paymentDetails.discount.toFixed(2)} €</span>
+                      </div>
+                    </>
+                  )}
+                  <Separator />
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Montant total à payer</p>
+                    <p className="text-3xl font-bold text-primary">{paymentDetails.amount.toFixed(2)} €</p>
                   </div>
                 </div>
 
@@ -102,7 +140,7 @@ const PaiementCrypto = () => {
                     </Button>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Copiez cette adresse et envoyez exactement {amount} USDT depuis votre portefeuille crypto
+                    Copiez cette adresse et envoyez exactement {paymentDetails.amount.toFixed(2)} € en USDT depuis votre portefeuille crypto
                   </p>
                 </div>
 

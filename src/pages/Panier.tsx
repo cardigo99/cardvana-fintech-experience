@@ -184,7 +184,22 @@ const Panier = () => {
                     </div>
                   </div>
                   <Button className="w-full mt-6" size="lg" asChild>
-                    <a href="/paiement-crypto">Procéder au paiement</a>
+                    <a 
+                      href="/paiement-crypto"
+                      onClick={() => {
+                        localStorage.setItem('payment_amount', total.toFixed(2));
+                        localStorage.setItem('payment_subtotal', subtotal.toFixed(2));
+                        if (appliedPromo) {
+                          localStorage.setItem('payment_discount', discount.toFixed(2));
+                          localStorage.setItem('payment_promo', appliedPromo.code);
+                        } else {
+                          localStorage.removeItem('payment_discount');
+                          localStorage.removeItem('payment_promo');
+                        }
+                      }}
+                    >
+                      Procéder au paiement
+                    </a>
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
                     <a href="/">Continuer mes achats</a>
