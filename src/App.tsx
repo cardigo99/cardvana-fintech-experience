@@ -13,6 +13,7 @@ import PolitiqueConfidentialite from "./pages/PolitiqueConfidentialite";
 import ConditionsGenerales from "./pages/ConditionsGenerales";
 import MentionsLegales from "./pages/MentionsLegales";
 import Panier from "./pages/Panier";
+import MonCompte from "./pages/MonCompte";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/panier" element={<Panier />} />
+          <Route path="/mon-compte" element={<MonCompte />} />
           <Route path="/conditions-generales" element={<ConditionsGenerales />} />
           <Route path="/politique-de-remboursement" element={<PolitiqueRemboursement />} />
           <Route path="/politique-de-reclamation" element={<PolitiqueReclamation />} />

@@ -40,8 +40,10 @@ export const Navigation = () => {
                 <ShoppingCart className="w-5 h-5" />
               </a>
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="w-5 h-5" />
+            <Button variant="ghost" size="icon" asChild>
+              <a href="/mon-compte">
+                <User className="w-5 h-5" />
+              </a>
             </Button>
             <Button>Connexion</Button>
           </div>
@@ -72,9 +74,11 @@ export const Navigation = () => {
                       Panier
                     </a>
                   </Button>
-                  <Button variant="outline" className="justify-start">
-                    <User className="w-4 h-4 mr-2" />
-                    Mon compte
+                  <Button variant="outline" className="justify-start" asChild>
+                    <a href="/mon-compte">
+                      <User className="w-4 h-4 mr-2" />
+                      Mon compte
+                    </a>
                   </Button>
                   <Button>Connexion</Button>
                 </div>
