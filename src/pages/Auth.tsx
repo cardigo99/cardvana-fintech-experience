@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/use-auth';
 import { toast } from '@/hooks/use-toast';
 import { LogIn, UserPlus } from 'lucide-react';
+import { Logo } from '@/components/ui/logo';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +84,9 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="absolute top-6 left-6">
+        <Logo />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Authentification</CardTitle>
