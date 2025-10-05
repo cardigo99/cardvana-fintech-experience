@@ -116,7 +116,7 @@ const PaiementCrypto = () => {
                     <li>• Envoyez uniquement des USDT (Tether)</li>
                     <li>• Utilisez le réseau ERC-20 (Ethereum)</li>
                     <li>• Vérifiez bien l'adresse avant d'envoyer</li>
-                    <li>• Le traitement peut prendre 5-15 minutes</li>
+                    <li>• Indiquez votre email dans le libellé du virement pour l'authentification</li>
                   </ul>
                 </div>
               </div>
