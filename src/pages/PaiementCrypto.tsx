@@ -147,7 +147,7 @@ const PaiementCrypto = () => {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>1. Cliquez sur "J'ai effectué le paiement"</li>
                 <li>2. Nous vérifions automatiquement votre transaction</li>
-                <li>3. Vous recevrez vos codes par email 1 minutes</li>
+                <li>3. Vous recevrez vos codes par email sous 1 minute</li>
                 <li>4. Les codes seront également disponibles dans votre compte</li>
               </ul>
             </Card>
