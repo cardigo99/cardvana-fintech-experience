@@ -1,86 +1,110 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { Copy, Check, ArrowLeft } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+
+type CryptoType = "BTC" | "ETH" | "USDT" | "LTC";
 
 interface CryptoOption {
-  id: "BTC" | "ETH" | "USDT" | "LTC";
+  id: CryptoType;
   name: string;
-  eurPerUnit: number; // EUR needed to buy 1 unit
+  rate: number;
   address: string;
+  symbol: string;
 }
 
-const CRYPTOS: CryptoOption[] = [
-  { id: "BTC", name: "Bitcoin", eurPerUnit: 60000, address: "bc1qxexamplebtcaddress000000000" },
-  { id: "ETH", name: "Ethereum", eurPerUnit: 2500, address: "0xExampleEthereumAddress0000000000000000" },
-  { id: "USDT", name: "Tether (USDT)", eurPerUnit: 1, address: "TRC20-USDT-Example-Address-000000" },
-  { id: "LTC", name: "Litecoin", eurPerUnit: 70, address: "ltc1qexamplelitecoinaddress000000" },
+const cryptoOptions: CryptoOption[] = [
+  {
+    id: "BTC",
+    name: "Bitcoin",
+    rate: 0.000023,
+    address: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    symbol: "BTC",
+  },
+  {
+    id: "ETH",
+    name: "Ethereum",
+    rate: 0.00038,
+    address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    symbol: "ETH",
+  },
+  {
+    id: "USDT",
+    name: "Tether (USDT)",
+    rate: 1.0,
+    address: "TYASr5UV6HEcXatwdFQfqLvdLcIVjHg7tW",
+    symbol: "USDT",
+  },
+  {
+    id: "LTC",
+    name: "Litecoin",
+    rate: 0.012,
+    address: "LQTpS3VaYTjCr4s9Y8RyLxqJ5vHpkC9mJH",
+    symbol: "LTC",
+  },
 ];
 
 const PaiementCrypto = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const total = location.state?.total || 0;
 
-  const totalEUR = (location.state as { total?: number } | undefined)?.total ?? 0;
-  const [selected, setSelected] = useState<CryptoOption["id"]>("BTC");
+  const [selectedCrypto, setSelectedCrypto] = useState<CryptoType>("BTC");
+  const [copied, setCopied] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
-  const current = CRYPTOS.find(c => c.id === selected)!;
-  const amountInCrypto = useMemo(() => {
-    if (!totalEUR || !current) return 0;
-    return totalEUR / current.eurPerUnit;
-  }, [totalEUR, current]);
+  const currentCrypto = cryptoOptions.find((c) => c.id === selectedCrypto);
+  const cryptoAmount = currentCrypto ? (total * currentCrypto.rate).toFixed(8) : "0";
 
-  useEffect(() => {
-    // Basic SEO updates
-    document.title = "Paiement crypto - Cardvana";
-    const ensureMeta = (name: string, content: string) => {
-      let el = document.querySelector(`meta[name="${name}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute("name", name);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-    ensureMeta("description", "Payez en cryptomonnaie (Bitcoin, Ethereum, USDT, Litecoin) sur Cardvana.");
-
-    // Canonical tag
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      document.head.appendChild(canonical);
-    }
-    canonical.href = window.location.href;
-  }, []);
-
-  const copyAddress = async () => {
-    try {
-      await navigator.clipboard.writeText(current.address);
-      toast({ title: "Adresse copiée", description: "L'adresse du portefeuille a été copiée." });
-    } catch {
-      toast({ title: "Impossible de copier", description: "Veuillez copier l'adresse manuellement.", variant: "destructive" });
+  const handleCopyAddress = () => {
+    if (currentCrypto) {
+      navigator.clipboard.writeText(currentCrypto.address);
+      setCopied(true);
+      toast({
+        title: "Adresse copiée",
+        description: "L'adresse du portefeuille a été copiée dans le presse-papier",
+      });
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  if (!totalEUR || totalEUR <= 0) {
+  const handleConfirmPayment = () => {
+    setConfirmed(true);
+    toast({
+      title: "Transaction enregistrée",
+      description: "Nous vérifions votre paiement",
+    });
+  };
+
+  if (confirmed) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Navigation />
-        <main className="flex-1 container mx-auto px-4 py-16">
-          <Card className="p-8 text-center">
-            <h1 className="text-3xl font-bold mb-2">Paiement crypto</h1>
-            <p className="text-muted-foreground mb-6">Aucun montant n'a été transmis. Retournez au panier pour recommencer.</p>
-            <Button onClick={() => navigate("/panier")}>Retour au panier</Button>
-          </Card>
+        <main className="flex-1 container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+              <Check className="w-10 h-10 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold text-foreground">
+              Merci pour votre commande !
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Votre paiement est en cours de validation. Vous recevrez votre carte cadeau par e-mail sous peu.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Le processus de confirmation peut prendre quelques minutes selon le réseau blockchain.
+            </p>
+            <Button onClick={() => navigate("/")} className="mt-8">
+              Retour à l'accueil
+            </Button>
+          </div>
         </main>
         <Footer />
       </div>
@@ -91,63 +115,114 @@ const PaiementCrypto = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
       <main className="flex-1 container mx-auto px-4 py-12">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold">Paiement en cryptomonnaie</h1>
-          <p className="text-muted-foreground mt-2">Montant de votre commande: <span className="font-semibold">{totalEUR.toFixed(2)}€</span></p>
-        </header>
+        <div className="max-w-3xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/panier")}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au panier
+          </Button>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          <Card className="p-6 lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-4">Choisissez une cryptomonnaie</h2>
-            <RadioGroup value={selected} onValueChange={(v) => setSelected(v as CryptoOption["id"]) } className="grid sm:grid-cols-2 gap-4">
-              {CRYPTOS.map((c) => (
-                <label key={c.id} className="flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:shadow-card">
-                  <RadioGroupItem id={c.id} value={c.id} />
-                  <div>
-                    <div className="font-medium">{c.name}</div>
-                    <div className="text-sm text-muted-foreground">1 {c.id} ≈ {c.eurPerUnit.toLocaleString("fr-FR")}€</div>
-                  </div>
-                </label>
-              ))}
-            </RadioGroup>
+          <h1 className="text-3xl font-bold mb-2 text-foreground">Paiement en cryptomonnaie</h1>
+          <p className="text-muted-foreground mb-8">
+            Choisissez votre cryptomonnaie et effectuez le paiement
+          </p>
 
-            <Separator className="my-6" />
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Montant à envoyer</span>
-                <span className="text-lg font-semibold">{amountInCrypto.toFixed(8)} {current.id}</span>
+          <div className="space-y-6">
+            {/* Total */}
+            <Card className="p-6 bg-card border-border">
+              <div className="flex justify-between items-center">
+                <span className="text-lg text-muted-foreground">Montant total</span>
+                <span className="text-2xl font-bold text-foreground">{total.toFixed(2)} €</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Adresse de réception</span>
-                <code className="px-2 py-1 rounded bg-muted">{current.address}</code>
-              </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={copyAddress}>Copier l'adresse</Button>
-                <Button onClick={() => setConfirmed(true)}>Confirmer la transaction</Button>
-              </div>
-            </div>
-          </Card>
-
-          <aside>
-            <Card className="p-6 sticky top-4">
-              <h3 className="text-lg font-semibold mb-4">Récapitulatif</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between text-muted-foreground"><span>Total commande</span><span>{totalEUR.toFixed(2)}€</span></div>
-                <div className="flex justify-between"><span className="font-medium">Vous payez</span><span className="font-semibold">{amountInCrypto.toFixed(8)} {current.id}</span></div>
-              </div>
-              <Separator className="my-4" />
-              <Button className="w-full" onClick={() => setConfirmed(true)}>J'ai envoyé le paiement</Button>
             </Card>
-          </aside>
-        </div>
 
-        {confirmed && (
-          <Card className="p-6 mt-8">
-            <h2 className="text-xl font-semibold mb-2">Merci ! Paiement en cours de validation</h2>
-            <p className="text-muted-foreground">Votre transaction est en cours de confirmation sur la blockchain. Vous recevrez votre carte cadeau par e-mail sous peu.</p>
-          </Card>
-        )}
+            {/* Crypto Selection */}
+            <Card className="p-6 bg-card border-border">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">
+                Choisissez votre cryptomonnaie
+              </h2>
+              <RadioGroup
+                value={selectedCrypto}
+                onValueChange={(value) => setSelectedCrypto(value as CryptoType)}
+                className="space-y-3"
+              >
+                {cryptoOptions.map((crypto) => (
+                  <div
+                    key={crypto.id}
+                    className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors"
+                  >
+                    <RadioGroupItem value={crypto.id} id={crypto.id} />
+                    <Label
+                      htmlFor={crypto.id}
+                      className="flex-1 cursor-pointer text-foreground font-medium"
+                    >
+                      {crypto.name} ({crypto.symbol})
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </Card>
+
+            {/* Payment Details */}
+            <Card className="p-6 bg-card border-border">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">
+                Détails du paiement
+              </h2>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-4 bg-accent/30 rounded-lg">
+                  <span className="text-muted-foreground">Montant à envoyer</span>
+                  <span className="text-xl font-bold text-foreground">
+                    {cryptoAmount} {currentCrypto?.symbol}
+                  </span>
+                </div>
+
+                <div>
+                  <Label className="text-sm text-muted-foreground mb-2 block">
+                    Adresse du portefeuille
+                  </Label>
+                  <div className="flex gap-2">
+                    <div className="flex-1 p-4 bg-accent/30 rounded-lg font-mono text-sm break-all text-foreground">
+                      {currentCrypto?.address}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopyAddress}
+                      className="shrink-0"
+                    >
+                      {copied ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                  <p className="text-sm text-foreground">
+                    <strong>Important :</strong> Envoyez exactement{" "}
+                    <strong>{cryptoAmount} {currentCrypto?.symbol}</strong> à l'adresse
+                    ci-dessus. Tout montant différent pourrait retarder votre commande.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Confirm Button */}
+            <Button
+              onClick={handleConfirmPayment}
+              className="w-full"
+              size="lg"
+            >
+              J'ai effectué le paiement
+            </Button>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>
