@@ -16,6 +16,7 @@ import MentionsLegales from "./pages/MentionsLegales";
 import Panier from "./pages/Panier";
 import MonCompte from "./pages/MonCompte";
 import ConfirmationCommande from "./pages/ConfirmationCommande";
+import ConfirmationMessage from "./pages/ConfirmationMessage";
 import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/panier" element={<Panier />} />
             <Route path="/mon-compte" element={<MonCompte />} />
             <Route path="/confirmation-commande" element={<ConfirmationCommande />} />
+            <Route path="/confirmation-message" element={<ConfirmationMessage />} />
             <Route path="/conditions-generales" element={<ConditionsGenerales />} />
             <Route path="/politique-de-remboursement" element={<PolitiqueRemboursement />} />
             <Route path="/politique-de-reclamation" element={<PolitiqueReclamation />} />
