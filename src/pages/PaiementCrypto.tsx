@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 
-type CryptoType = "BTC" | "ETH" | "USDT" | "LTC";
+type CryptoType = "USDT";
 
 interface CryptoOption {
   id: CryptoType;
@@ -21,32 +21,11 @@ interface CryptoOption {
 
 const cryptoOptions: CryptoOption[] = [
   {
-    id: "BTC",
-    name: "Bitcoin",
-    rate: 0.000023,
-    address: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
-    symbol: "BTC",
-  },
-  {
-    id: "ETH",
-    name: "Ethereum",
-    rate: 0.00038,
-    address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-    symbol: "ETH",
-  },
-  {
     id: "USDT",
     name: "Tether (USDT)",
     rate: 1.0,
     address: "TYASr5UV6HEcXatwdFQfqLvdLcIVjHg7tW",
     symbol: "USDT",
-  },
-  {
-    id: "LTC",
-    name: "Litecoin",
-    rate: 0.012,
-    address: "LQTpS3VaYTjCr4s9Y8RyLxqJ5vHpkC9mJH",
-    symbol: "LTC",
   },
 ];
 
@@ -56,7 +35,7 @@ const PaiementCrypto = () => {
   const { toast } = useToast();
   const total = location.state?.total || 0;
 
-  const [selectedCrypto, setSelectedCrypto] = useState<CryptoType>("BTC");
+  const [selectedCrypto, setSelectedCrypto] = useState<CryptoType>("USDT");
   const [copied, setCopied] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -114,7 +93,7 @@ const PaiementCrypto = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
-      <main className="flex-1 container mx-auto px-4 py-12">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-20">
         <div className="max-w-3xl mx-auto">
           <Button
             variant="ghost"
