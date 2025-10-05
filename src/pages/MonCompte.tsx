@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, ShoppingBag, Settings, LogOut } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { User, ShoppingBag, Settings, LogOut, Eye, Package, Calendar, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,6 +29,12 @@ const MonCompte = () => {
     newPassword: "",
     confirmPassword: ""
   });
+
+  // États pour les modales
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
 
   const handleProfileChange = (field: string, value: string) => {
     setProfileData(prev => ({ ...prev, [field]: value }));
@@ -99,16 +107,26 @@ const MonCompte = () => {
   };
 
   const handleDeleteAccount = () => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.")) {
-      toast({
-        title: "Compte supprimé",
-        description: "Votre compte a été supprimé avec succès",
-      });
-      // Redirection après suppression
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
-    }
+    // Supprimer toutes les données utilisateur
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("cart");
+    
+    toast({
+      title: "Compte supprimé",
+      description: "Votre compte a été supprimé avec succès",
+    });
+    
+    setIsDeleteDialogOpen(false);
+    
+    // Redirection après suppression
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 2000);
+  };
+
+  const handleViewOrderDetails = (order: any) => {
+    setSelectedOrder(order);
+    setIsOrderDetailsOpen(true);
   };
   const mockOrders = [
     {
@@ -116,14 +134,24 @@ const MonCompte = () => {
       date: "15 janvier 2024",
       brand: "Amazon",
       amount: 50,
-      status: "Livré"
+      status: "Livré",
+      paymentMethod: "Crypto (USDT)",
+      transactionId: "0x1234...5678",
+      cardValue: "50€",
+      deliveryEmail: "jean.dupont@example.com",
+      code: "AMZN-1234-5678-9012"
     },
     {
       id: "CMD002",
       date: "10 janvier 2024",
       brand: "Netflix",
       amount: 25,
-      status: "Livré"
+      status: "Livré",
+      paymentMethod: "Crypto (USDT)",
+      transactionId: "0xabcd...efgh",
+      cardValue: "25€",
+      deliveryEmail: "jean.dupont@example.com",
+      code: "NFLX-9876-5432-1098"
     }
   ];
 
@@ -224,7 +252,12 @@ const MonCompte = () => {
                             {order.date} • {order.brand} • {order.amount}€
                           </p>
                         </div>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleViewOrderDetails(order)}
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
                           Voir détails
                         </Button>
                       </div>
@@ -274,7 +307,10 @@ const MonCompte = () => {
                           onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
                         />
                       </div>
-                      <Button onClick={handleChangePassword}>Modifier le mot de passe</Button>
+                      <Button onClick={() => {
+                        handleChangePassword();
+                        setIsPasswordChangeOpen(true);
+                      }}>Modifier le mot de passe</Button>
                     </div>
                   </div>
                   <Separator />
@@ -283,7 +319,12 @@ const MonCompte = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       La suppression de votre compte est permanente et irréversible.
                     </p>
-                    <Button variant="destructive" onClick={handleDeleteAccount}>Supprimer mon compte</Button>
+                    <Button 
+                      variant="destructive" 
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                    >
+                      Supprimer mon compte
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -292,6 +333,128 @@ const MonCompte = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Modale détails de commande */}
+      <Dialog open={isOrderDetailsOpen} onOpenChange={setIsOrderDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="w-5 h-5" />
+              Détails de la commande {selectedOrder?.id}
+            </DialogTitle>
+            <DialogDescription>
+              Informations complètes sur votre commande
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedOrder && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Date de commande</p>
+                  <p className="flex items-center gap-2 font-medium">
+                    <Calendar className="w-4 h-4" />
+                    {selectedOrder.date}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Statut</p>
+                  <span className="inline-flex items-center px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-sm font-medium">
+                    {selectedOrder.status}
+                  </span>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="font-semibold">Produit</h3>
+                <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                  <div>
+                    <p className="font-medium">{selectedOrder.brand}</p>
+                    <p className="text-sm text-muted-foreground">Carte cadeau</p>
+                  </div>
+                  <p className="text-xl font-bold">{selectedOrder.cardValue}</p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="font-semibold">Informations de paiement</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Méthode de paiement</span>
+                    <span className="font-medium flex items-center gap-2">
+                      <CreditCard className="w-4 h-4" />
+                      {selectedOrder.paymentMethod}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">ID Transaction</span>
+                    <span className="font-mono text-sm">{selectedOrder.transactionId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Montant payé</span>
+                    <span className="font-semibold">{selectedOrder.amount} USDT</span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h3 className="font-semibold">Code de la carte cadeau</h3>
+                <div className="p-4 bg-primary/5 border-2 border-primary/20 rounded-lg">
+                  <p className="text-center font-mono text-lg font-bold tracking-wider">
+                    {selectedOrder.code}
+                  </p>
+                </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Ce code a été envoyé à {selectedOrder.deliveryEmail}
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button className="flex-1" onClick={() => {
+                  navigator.clipboard.writeText(selectedOrder.code);
+                  toast({
+                    title: "Code copié",
+                    description: "Le code a été copié dans le presse-papiers",
+                  });
+                }}>
+                  Copier le code
+                </Button>
+                <Button variant="outline" onClick={() => setIsOrderDetailsOpen(false)}>
+                  Fermer
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialogue de confirmation de suppression */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous absolument sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Cela supprimera définitivement votre compte
+              et toutes vos données de nos serveurs.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Oui, supprimer mon compte
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
