@@ -11,9 +11,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { User, ShoppingBag, Settings, LogOut, Eye, Package, Calendar, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 const MonCompte = () => {
   const { toast } = useToast();
+  const { logout } = useAuth();
   
   // État pour les informations du profil
   const [profileData, setProfileData] = useState({
@@ -162,7 +164,7 @@ const MonCompte = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold">Mon Compte</h1>
-            <Button variant="outline">
+            <Button variant="outline" onClick={logout}>
               <LogOut className="w-4 h-4 mr-2" />
               Déconnexion
             </Button>

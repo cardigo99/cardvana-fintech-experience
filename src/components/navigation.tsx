@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
-import { Menu, X, ShoppingCart, User } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const navItems = [
     { label: "Accueil", href: "/" },
@@ -45,7 +47,16 @@ export const Navigation = () => {
                 <User className="w-5 h-5" />
               </a>
             </Button>
-            <Button>Connexion</Button>
+            {user ? (
+              <Button onClick={logout} variant="outline">
+                <LogOut className="w-4 h-4 mr-2" />
+                Déconnexion
+              </Button>
+            ) : (
+              <Button asChild>
+                <a href="/auth">Connexion</a>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -80,7 +91,16 @@ export const Navigation = () => {
                       Mon compte
                     </a>
                   </Button>
-                  <Button>Connexion</Button>
+                  {user ? (
+                    <Button onClick={() => { logout(); setIsOpen(false); }} variant="outline" className="justify-start">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
+                  ) : (
+                    <Button asChild>
+                      <a href="/auth">Connexion</a>
+                    </Button>
+                  )}
                 </div>
               </div>
             </SheetContent>
