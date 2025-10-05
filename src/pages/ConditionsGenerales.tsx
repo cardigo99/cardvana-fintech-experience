@@ -5,7 +5,7 @@ const ConditionsGenerales = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 py-16 max-w-4xl">
+      <main className="container mx-auto px-4 py-24 max-w-4xl">
         <h1 className="text-4xl font-bold mb-8 text-foreground text-center">Conditions Générales de Vente</h1>
         <div className="prose prose-lg dark:prose-invert max-w-none space-y-6 text-muted-foreground">
           <section>
