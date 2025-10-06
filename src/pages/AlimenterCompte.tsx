@@ -169,10 +169,18 @@ const AlimenterCompte = () => {
           </div>
 
           <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground">
-              ⚠️ Après avoir envoyé le paiement, cliquez sur "J'ai effectué le paiement". 
-              Votre rechargement sera vérifié et le montant ajouté à votre solde.
-            </p>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5" />
+                Après le paiement
+              </h4>
+              <ul className="text-sm text-amber-900 dark:text-amber-100 space-y-1">
+                <li>1. Cliquez sur "J'ai effectué le paiement"</li>
+                <li>2. Nous vérifions automatiquement votre transaction</li>
+                <li>3. Votre solde sera crédité instantanément après réception du paiement</li>
+                <li>4. Vous serez notifié par email une fois le rechargement effectué</li>
+              </ul>
+            </div>
           </div>
         </div>
       </main>

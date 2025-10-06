@@ -124,16 +124,19 @@ const PaiementCrypto = () => {
         paymentMethod,
       });
 
-      // Générer les codes de cartes cadeaux
-      const giftCards = createGiftCards(
-        user.id,
-        order.id,
-        cartItems.map(item => ({
-          brand: item.brand,
-          quantity: item.quantity,
-          price: item.price
-        }))
-      );
+      // Générer les codes uniquement pour les paiements par solde (déjà vérifiés)
+      let giftCards = [];
+      if (paymentDetails.method === 'balance') {
+        giftCards = createGiftCards(
+          user.id,
+          order.id,
+          cartItems.map(item => ({
+            brand: item.brand,
+            quantity: item.quantity,
+            price: item.price
+          }))
+        );
+      }
 
       clearCart();
       
@@ -143,10 +146,17 @@ const PaiementCrypto = () => {
       localStorage.removeItem('paymentPromoCode');
       localStorage.removeItem('paymentMethod');
 
-      toast({
-        title: "Paiement confirmé",
-        description: "Vos cartes cadeaux ont été générées",
-      });
+      if (paymentDetails.method === 'balance') {
+        toast({
+          title: "Paiement confirmé",
+          description: "Vos cartes cadeaux ont été générées",
+        });
+      } else {
+        toast({
+          title: "Commande enregistrée",
+          description: "Nous vérifions votre paiement. Vous recevrez vos codes après validation.",
+        });
+      }
 
       setIsProcessing(false);
       navigate("/confirmation-commande", { 

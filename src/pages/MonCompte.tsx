@@ -347,7 +347,7 @@ const MonCompte = () => {
                             </Button>
                           </div>
                           
-                          {orderCards.length > 0 && (
+                          {orderCards.length > 0 ? (
                             <>
                               <Separator />
                               <div className="space-y-3">
@@ -411,6 +411,15 @@ const MonCompte = () => {
                                     </div>
                                   </div>
                                 ))}
+                              </div>
+                            </>
+                          ) : order.status === 'En cours de vérification' && (
+                            <>
+                              <Separator />
+                              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                                <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                                  ⏳ Votre paiement est en cours de vérification. Vos codes seront générés automatiquement après validation.
+                                </p>
                               </div>
                             </>
                           )}

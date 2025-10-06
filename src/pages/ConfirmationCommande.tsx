@@ -12,7 +12,9 @@ import type { GiftCard } from "@/lib/giftcards";
 const ConfirmationCommande = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { giftCards = [] } = location.state || {};
+  const { order, giftCards = [] } = location.state || {};
+  
+  const isPendingPayment = giftCards.length === 0;
   
   const [visibleCodes, setVisibleCodes] = useState<Set<string>>(new Set());
 
@@ -55,15 +57,44 @@ const ConfirmationCommande = () => {
           {/* Title */}
           <div className="space-y-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold">
-              Merci pour votre achat !
+              {isPendingPayment ? 'Commande enregistrée !' : 'Merci pour votre achat !'}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Vos cartes cadeaux ont été générées avec succès
+              {isPendingPayment 
+                ? 'Votre paiement est en cours de vérification'
+                : 'Vos cartes cadeaux ont été générées avec succès'
+              }
             </p>
           </div>
 
-          {/* Gift Cards */}
-          {giftCards.length > 0 && (
+          {/* Gift Cards or Pending Message */}
+          {isPendingPayment ? (
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="space-y-2 text-center">
+                  <h2 className="text-2xl font-semibold">Paiement en cours de vérification</h2>
+                  <p className="text-muted-foreground">
+                    Nous vérifions actuellement votre transaction. Vos codes seront générés automatiquement dès réception du paiement.
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                  <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                    ⏳ Prochaines étapes
+                  </h3>
+                  <ul className="space-y-2 text-sm text-yellow-800 dark:text-yellow-200">
+                    <li>• Nous vérifions votre transaction sur la blockchain</li>
+                    <li>• Cette vérification peut prendre quelques minutes à quelques heures</li>
+                    <li>• Vous recevrez vos codes par email instantanément après réception du paiement</li>
+                    <li>• Les codes seront également disponibles dans votre compte</li>
+                    <li>• Assurez-vous que votre adresse email était bien dans le libellé du virement</li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          ) : giftCards.length > 0 && (
             <Card className="p-6">
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -137,19 +168,21 @@ const ConfirmationCommande = () => {
           )}
 
           {/* Information */}
-          <Card className="p-6 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-            <div className="space-y-3">
-              <h3 className="font-semibold text-blue-900 dark:text-blue-100">
-                📧 Informations importantes
-              </h3>
-              <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
-                <li>• Vos codes sont maintenant disponibles et utilisables</li>
-                <li>• Conservez-les précieusement ou retrouvez-les dans votre compte</li>
-                <li>• En cas de problème, contactez notre service client</li>
-                <li>• Ces codes sont valables selon les conditions du commerçant</li>
-              </ul>
-            </div>
-          </Card>
+          {!isPendingPayment && (
+            <Card className="p-6 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+              <div className="space-y-3">
+                <h3 className="font-semibold text-blue-900 dark:text-blue-100">
+                  📧 Informations importantes
+                </h3>
+                <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+                  <li>• Vos codes sont maintenant disponibles et utilisables</li>
+                  <li>• Conservez-les précieusement ou retrouvez-les dans votre compte</li>
+                  <li>• En cas de problème, contactez notre service client</li>
+                  <li>• Ces codes sont valables selon les conditions du commerçant</li>
+                </ul>
+              </div>
+            </Card>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
