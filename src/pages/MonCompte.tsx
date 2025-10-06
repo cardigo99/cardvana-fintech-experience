@@ -69,9 +69,11 @@ const MonCompte = () => {
       const userTransactions = getTransactions(user.id);
       setTransactions(userTransactions);
       
-      // Charger les rechargements en attente
+      // Charger les rechargements en attente (uniquement ceux en cours de vérification)
       const pending = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-      const userPending = pending.filter((p: any) => p.userId === user.id);
+      const userPending = pending.filter((p: any) => 
+        p.userId === user.id && p.status === 'En cours de vérification'
+      );
       setPendingRecharges(userPending);
       
       // Charger les cartes cadeaux achetées
