@@ -12,7 +12,7 @@ import type { GiftCard } from "@/lib/giftcards";
 const ConfirmationCommande = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { order, giftCards = [] } = location.state || {};
+  const { order, giftCards = [], isGuest = false } = location.state || {};
   
   const isPendingPayment = giftCards.length === 0;
   
@@ -88,6 +88,9 @@ const ConfirmationCommande = () => {
                     <li>• Nous vérifions votre transaction sur la blockchain</li>
                     <li>• Cette vérification peut prendre quelques minutes</li>
                     <li>• Vous recevrez vos codes par email instantanément après réception du paiement</li>
+                    {!isGuest && (
+                      <li>• Les codes seront également disponibles dans votre compte</li>
+                    )}
                     <li>• Assurez-vous que votre adresse email était bien dans le libellé du virement</li>
                   </ul>
                 </div>
