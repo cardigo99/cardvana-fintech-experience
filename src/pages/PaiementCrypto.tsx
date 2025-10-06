@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getCart, clearCart } from "@/lib/cart";
 import { saveOrder } from "@/lib/orders";
 import { deductBalance, getBalance } from "@/lib/wallet";
+import { createGiftCards } from "@/lib/giftcards";
 import walletQR from "@/assets/wallet-qr-new.jpeg";
 
 const PaiementCrypto = () => {
@@ -123,6 +124,17 @@ const PaiementCrypto = () => {
         paymentMethod,
       });
 
+      // Générer les codes de cartes cadeaux
+      const giftCards = createGiftCards(
+        user.id,
+        order.id,
+        cartItems.map(item => ({
+          brand: item.brand,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      );
+
       clearCart();
       
       localStorage.removeItem('paymentAmount');
@@ -133,12 +145,12 @@ const PaiementCrypto = () => {
 
       toast({
         title: "Paiement confirmé",
-        description: "Votre commande est en cours de traitement",
+        description: "Vos cartes cadeaux ont été générées",
       });
 
       setIsProcessing(false);
       navigate("/confirmation-commande", { 
-        state: { order }
+        state: { order, giftCards }
       });
     }, 2000);
   };

@@ -9,12 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { User, ShoppingBag, Settings, Eye, Package, Calendar, CreditCard, Wallet, Plus } from "lucide-react";
+import { User, ShoppingBag, Settings, Eye, Package, Calendar, CreditCard, Wallet, Plus, Copy, EyeOff, Gift } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserOrders, Order } from "@/lib/orders";
 import { getUserWallet, getTransactions, Transaction } from "@/lib/wallet";
+import { getUserGiftCards, type GiftCard } from "@/lib/giftcards";
 import { useNavigate } from "react-router-dom";
 
 const MonCompte = () => {
@@ -25,6 +26,8 @@ const MonCompte = () => {
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [pendingRecharges, setPendingRecharges] = useState<any[]>([]);
+  const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const [visibleCodes, setVisibleCodes] = useState<Set<string>>(new Set());
   
   // État pour les informations du profil
   const [profileData, setProfileData] = useState({
@@ -63,6 +66,10 @@ const MonCompte = () => {
       const pending = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
       const userPending = pending.filter((p: any) => p.userId === user.id);
       setPendingRecharges(userPending);
+      
+      // Charger les cartes cadeaux achetées
+      const userCards = getUserGiftCards(user.id);
+      setGiftCards(userCards);
     }
   }, [user]);
 
@@ -153,6 +160,26 @@ const MonCompte = () => {
     setIsOrderDetailsOpen(true);
   };
 
+  const toggleCodeVisibility = (cardId: string) => {
+    setVisibleCodes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId);
+      } else {
+        newSet.add(cardId);
+      }
+      return newSet;
+    });
+  };
+
+  const copyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    toast({
+      title: "Code copié",
+      description: "Le code a été copié dans le presse-papiers",
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -163,10 +190,14 @@ const MonCompte = () => {
           </div>
 
           <Tabs defaultValue="wallet" className="space-y-6">
-            <TabsList className="grid w-full max-w-2xl grid-cols-4">
+            <TabsList className="grid w-full max-w-3xl grid-cols-5">
               <TabsTrigger value="wallet">
                 <Wallet className="w-4 h-4 mr-2" />
                 Portefeuille
+              </TabsTrigger>
+              <TabsTrigger value="purchases">
+                <Gift className="w-4 h-4 mr-2" />
+                Mes achats
               </TabsTrigger>
               <TabsTrigger value="profile">
                 <User className="w-4 h-4 mr-2" />
@@ -284,6 +315,92 @@ const MonCompte = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="purchases">
+              <Card className="p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-2">Historique d'achats</h2>
+                    <p className="text-muted-foreground">Consultez et gérez vos cartes cadeaux achetées</p>
+                  </div>
+
+                  <Separator />
+
+                  {giftCards.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Gift className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">Aucune carte cadeau achetée pour le moment</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {giftCards.map((card) => (
+                        <Card key={card.id} className="p-4">
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold text-lg">{card.brand}</h3>
+                                  <span className={`text-xs px-2 py-1 rounded ${
+                                    card.status === 'active' 
+                                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                      : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                                  }`}>
+                                    {card.status === 'active' ? 'Active' : 'Utilisée'}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-1">
+                                  Valeur : {card.amount.toFixed(2)} €
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Acheté le {card.purchaseDate}
+                                </p>
+                              </div>
+                            </div>
+
+                            <Separator />
+
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Code de la carte cadeau</label>
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 bg-muted border rounded p-3 font-mono text-sm">
+                                  {visibleCodes.has(card.id) ? (
+                                    <span className="select-all">{card.code}</span>
+                                  ) : (
+                                    <span className="blur-sm select-none">{card.code}</span>
+                                  )}
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => toggleCodeVisibility(card.id)}
+                                  title={visibleCodes.has(card.id) ? "Masquer" : "Afficher"}
+                                >
+                                  {visibleCodes.has(card.id) ? (
+                                    <EyeOff className="w-4 h-4" />
+                                  ) : (
+                                    <Eye className="w-4 h-4" />
+                                  )}
+                                </Button>
+                                {visibleCodes.has(card.id) && (
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => copyCode(card.code)}
+                                    title="Copier"
+                                  >
+                                    <Copy className="w-4 h-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Card>
             </TabsContent>
