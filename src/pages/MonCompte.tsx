@@ -190,22 +190,18 @@ const MonCompte = () => {
           </div>
 
           <Tabs defaultValue="wallet" className="space-y-6">
-            <TabsList className="grid w-full max-w-3xl grid-cols-5">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4">
               <TabsTrigger value="wallet">
                 <Wallet className="w-4 h-4 mr-2" />
                 Portefeuille
               </TabsTrigger>
-              <TabsTrigger value="purchases">
-                <Gift className="w-4 h-4 mr-2" />
+              <TabsTrigger value="orders">
+                <ShoppingBag className="w-4 h-4 mr-2" />
                 Mes achats
               </TabsTrigger>
               <TabsTrigger value="profile">
                 <User className="w-4 h-4 mr-2" />
                 Profil
-              </TabsTrigger>
-              <TabsTrigger value="orders">
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Commandes
               </TabsTrigger>
               <TabsTrigger value="settings">
                 <Settings className="w-4 h-4 mr-2" />
@@ -319,86 +315,113 @@ const MonCompte = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="purchases">
+            <TabsContent value="orders">
               <Card className="p-6">
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-2">Historique d'achats</h2>
-                    <p className="text-muted-foreground">Consultez et gérez vos cartes cadeaux achetées</p>
-                  </div>
-
-                  <Separator />
-
-                  {giftCards.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Gift className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">Aucune carte cadeau achetée pour le moment</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {giftCards.map((card) => (
-                        <Card key={card.id} className="p-4">
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <h3 className="font-semibold text-lg">{card.brand}</h3>
-                                  <span className={`text-xs px-2 py-1 rounded ${
-                                    card.status === 'active' 
-                                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                      : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-                                  }`}>
-                                    {card.status === 'active' ? 'Active' : 'Utilisée'}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-muted-foreground mb-1">
-                                  Valeur : {card.amount.toFixed(2)} €
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  Acheté le {card.purchaseDate}
-                                </p>
+                <h2 className="text-2xl font-semibold mb-6">Mes achats</h2>
+                <div className="space-y-4">
+                  {orders.map((order) => {
+                    const orderCards = giftCards.filter(card => card.orderId === order.id);
+                    const statusColor = order.status === 'Livré' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500';
+                    return (
+                      <Card key={order.id} className="p-4">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="font-semibold">Commande #{order.id}</h3>
+                                <span className={`text-sm px-2 py-1 rounded-full ${statusColor}`}>
+                                  {order.status}
+                                </span>
                               </div>
+                              <p className="text-muted-foreground text-sm">
+                                {order.date} • {order.items.length} article(s) • {order.total.toFixed(2)}€
+                              </p>
                             </div>
-
-                            <Separator />
-
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">Code de la carte cadeau</label>
-                              <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-muted border rounded p-3 font-mono text-sm">
-                                  {visibleCodes.has(card.id) ? (
-                                    <span className="select-all">{card.code}</span>
-                                  ) : (
-                                    <span className="blur-sm select-none">{card.code}</span>
-                                  )}
-                                </div>
-                                <Button
-                                  variant="outline"
-                                  size="icon"
-                                  onClick={() => toggleCodeVisibility(card.id)}
-                                  title={visibleCodes.has(card.id) ? "Masquer" : "Afficher"}
-                                >
-                                  {visibleCodes.has(card.id) ? (
-                                    <EyeOff className="w-4 h-4" />
-                                  ) : (
-                                    <Eye className="w-4 h-4" />
-                                  )}
-                                </Button>
-                                {visibleCodes.has(card.id) && (
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => copyCode(card.code)}
-                                    title="Copier"
-                                  >
-                                    <Copy className="w-4 h-4" />
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleViewOrderDetails(order)}
+                            >
+                              <Eye className="w-4 h-4 mr-2" />
+                              Voir détails
+                            </Button>
                           </div>
-                        </Card>
-                      ))}
+                          
+                          {orderCards.length > 0 && (
+                            <>
+                              <Separator />
+                              <div className="space-y-3">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                  <Gift className="w-4 h-4" />
+                                  Codes de cartes cadeaux
+                                </h4>
+                                {orderCards.map((card) => (
+                                  <div key={card.id} className="border rounded-lg p-3 bg-muted/30">
+                                    <div className="flex items-start justify-between mb-2">
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <p className="font-medium">{card.brand}</p>
+                                          <span className={`text-xs px-2 py-1 rounded ${
+                                            card.status === 'active' 
+                                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                              : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                                          }`}>
+                                            {card.status === 'active' ? 'Active' : 'Utilisée'}
+                                          </span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                          Valeur : {card.amount.toFixed(2)} €
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <div className="flex items-center gap-2">
+                                        <div className="flex-1 bg-background border rounded p-2 font-mono text-xs">
+                                          {visibleCodes.has(card.id) ? (
+                                            <span className="select-all">{card.code}</span>
+                                          ) : (
+                                            <span className="blur-sm select-none">{card.code}</span>
+                                          )}
+                                        </div>
+                                        <Button
+                                          variant="outline"
+                                          size="icon"
+                                          className="h-9 w-9"
+                                          onClick={() => toggleCodeVisibility(card.id)}
+                                          title={visibleCodes.has(card.id) ? "Masquer" : "Afficher"}
+                                        >
+                                          {visibleCodes.has(card.id) ? (
+                                            <EyeOff className="w-4 h-4" />
+                                          ) : (
+                                            <Eye className="w-4 h-4" />
+                                          )}
+                                        </Button>
+                                        {visibleCodes.has(card.id) && (
+                                          <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-9 w-9"
+                                            onClick={() => copyCode(card.code)}
+                                            title="Copier"
+                                          >
+                                            <Copy className="w-4 h-4" />
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </Card>
+                    );
+                  })}
+                  {orders.length === 0 && (
+                    <div className="text-center py-12">
+                      <ShoppingBag className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">Aucun achat pour le moment</p>
                     </div>
                   )}
                 </div>
@@ -451,48 +474,6 @@ const MonCompte = () => {
                   </div>
                   <Separator />
                   <Button onClick={handleSaveProfile}>Enregistrer les modifications</Button>
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="orders">
-              <Card className="p-6">
-                <h2 className="text-2xl font-semibold mb-6">Historique des commandes</h2>
-                <div className="space-y-4">
-                  {orders.map((order) => {
-                    const statusColor = order.status === 'Livré' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500';
-                    return (
-                      <Card key={order.id} className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-semibold">Commande #{order.id}</h3>
-                              <span className={`text-sm px-2 py-1 rounded-full ${statusColor}`}>
-                                {order.status}
-                              </span>
-                            </div>
-                            <p className="text-muted-foreground text-sm">
-                              {order.date} • {order.items.length} article(s) • {order.total.toFixed(2)}€
-                            </p>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleViewOrderDetails(order)}
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            Voir détails
-                          </Button>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                  {orders.length === 0 && (
-                    <div className="text-center py-12">
-                      <ShoppingBag className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">Aucune commande pour le moment</p>
-                    </div>
-                  )}
                 </div>
               </Card>
             </TabsContent>
