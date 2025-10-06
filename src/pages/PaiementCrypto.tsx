@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getCart, clearCart } from "@/lib/cart";
 import { saveOrder } from "@/lib/orders";
 import { deductBalance, getBalance } from "@/lib/wallet";
-import walletQR from "@/assets/wallet-qr.jpeg";
+import walletQR from "@/assets/wallet-qr-new.jpeg";
 
 const PaiementCrypto = () => {
   const navigate = useNavigate();

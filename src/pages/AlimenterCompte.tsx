@@ -8,7 +8,7 @@ import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { addBalance } from "@/lib/wallet";
-import walletQR from "@/assets/wallet-qr.jpeg";
+import walletQR from "@/assets/wallet-qr-new.jpeg";
 
 const AlimenterCompte = () => {
   const navigate = useNavigate();
