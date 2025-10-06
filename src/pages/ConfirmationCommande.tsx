@@ -88,7 +88,6 @@ const ConfirmationCommande = () => {
                     <li>• Nous vérifions votre transaction sur la blockchain</li>
                     <li>• Cette vérification peut prendre quelques minutes à quelques heures</li>
                     <li>• Vous recevrez vos codes par email instantanément après réception du paiement</li>
-                    <li>• Les codes seront également disponibles dans votre compte</li>
                     <li>• Assurez-vous que votre adresse email était bien dans le libellé du virement</li>
                   </ul>
                 </div>
