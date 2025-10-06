@@ -45,23 +45,21 @@ export const Navigation = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            <Button variant="ghost" size="icon" asChild>
+              <a href="/panier">
+                <ShoppingCart className="w-5 h-5" />
+              </a>
+            </Button>
+            <Button variant="ghost" size="icon" asChild>
+              <a href="/mon-compte">
+                <User className="w-5 h-5" />
+              </a>
+            </Button>
             {user ? (
-              <>
-                <Button variant="ghost" size="icon" asChild>
-                  <a href="/panier">
-                    <ShoppingCart className="w-5 h-5" />
-                  </a>
-                </Button>
-                <Button variant="ghost" size="icon" asChild>
-                  <a href="/mon-compte">
-                    <User className="w-5 h-5" />
-                  </a>
-                </Button>
-                <Button onClick={handleLogout} variant="outline">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Déconnexion
-                </Button>
-              </>
+              <Button onClick={handleLogout} variant="outline">
+                <LogOut className="w-4 h-4 mr-2" />
+                Déconnexion
+              </Button>
             ) : (
               <Button asChild>
                 <a href="/auth">Connexion</a>
@@ -89,25 +87,23 @@ export const Navigation = () => {
                   </a>
                 ))}
                 <div className="flex flex-col space-y-3 pt-6 border-t border-subtle">
+                  <Button variant="outline" className="justify-start" asChild>
+                    <a href="/panier">
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Panier
+                    </a>
+                  </Button>
+                  <Button variant="outline" className="justify-start" asChild>
+                    <a href="/mon-compte">
+                      <User className="w-4 h-4 mr-2" />
+                      Mon compte
+                    </a>
+                  </Button>
                   {user ? (
-                    <>
-                      <Button variant="outline" className="justify-start" asChild>
-                        <a href="/panier">
-                          <ShoppingCart className="w-4 h-4 mr-2" />
-                          Panier
-                        </a>
-                      </Button>
-                      <Button variant="outline" className="justify-start" asChild>
-                        <a href="/mon-compte">
-                          <User className="w-4 h-4 mr-2" />
-                          Mon compte
-                        </a>
-                      </Button>
-                      <Button onClick={handleLogout} variant="outline" className="justify-start">
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Déconnexion
-                      </Button>
-                    </>
+                    <Button onClick={handleLogout} variant="outline" className="justify-start">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </Button>
                   ) : (
                     <Button asChild>
                       <a href="/auth">Connexion</a>
