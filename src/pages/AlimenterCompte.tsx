@@ -1,0 +1,168 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { addBalance } from "@/lib/wallet";
+import walletQR from "@/assets/wallet-qr.jpeg";
+
+const AlimenterCompte = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [amount, setAmount] = useState<number>(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const walletAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb";
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(walletAddress);
+    toast({
+      title: "Adresse copiée",
+      description: "L'adresse du portefeuille a été copiée",
+    });
+  };
+
+  const handleConfirm = async () => {
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (amount <= 0) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer un montant valide",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    setTimeout(() => {
+      addBalance(user.id, amount, `Rechargement de ${amount} €`);
+      
+      toast({
+        title: "Rechargement confirmé",
+        description: `${amount} € ont été ajoutés à votre solde`,
+      });
+
+      setIsProcessing(false);
+      navigate("/mon-compte");
+    }, 2000);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navigation />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/mon-compte")}
+          className="mb-6"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour à mon compte
+        </Button>
+
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-2">Alimenter mon compte</h1>
+            <p className="text-muted-foreground">
+              Rechargez votre solde Cardvana par crypto
+            </p>
+          </div>
+
+          <div className="bg-card rounded-lg p-6 border space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                Montant à recharger (€)
+              </label>
+              <Input
+                type="number"
+                placeholder="Ex: 1000"
+                value={amount || ""}
+                onChange={(e) => setAmount(Number(e.target.value))}
+                min="1"
+              />
+            </div>
+
+            <div className="pt-4 border-t">
+              <h3 className="font-semibold mb-2">Adresse du portefeuille</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                Réseau : ERC-20 (USDT)
+              </p>
+              <div className="flex items-center gap-2 bg-muted p-3 rounded">
+                <code className="text-sm flex-1 break-all">{walletAddress}</code>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={handleCopy}
+                  className="shrink-0"
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex justify-center py-4">
+              <img
+                src={walletQR}
+                alt="QR Code"
+                className="w-48 h-48 object-contain border rounded"
+              />
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                Instructions importantes
+              </h4>
+              <ul className="text-sm space-y-1 text-muted-foreground ml-6 list-disc">
+                <li>Envoyez l'équivalent du montant en USDT (ERC-20)</li>
+                <li>La conversion se fait automatiquement en euros</li>
+                <li>Le solde sera ajouté après confirmation</li>
+                <li>Conservez votre preuve de transaction</li>
+              </ul>
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => navigate("/mon-compte")}
+              >
+                Annuler
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={handleConfirm}
+                disabled={isProcessing || amount <= 0}
+              >
+                {isProcessing ? "Traitement..." : "J'ai effectué le paiement"}
+              </Button>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">
+              ⚠️ Après avoir envoyé le paiement, cliquez sur "J'ai effectué le paiement". 
+              Votre rechargement sera vérifié et le montant ajouté à votre solde sous 24-48h.
+            </p>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default AlimenterCompte;

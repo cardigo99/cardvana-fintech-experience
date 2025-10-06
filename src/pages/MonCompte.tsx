@@ -8,16 +8,22 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { User, ShoppingBag, Settings, LogOut, Eye, Package, Calendar, CreditCard } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { User, ShoppingBag, Settings, Eye, Package, Calendar, CreditCard, Wallet, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserOrders, Order } from "@/lib/orders";
+import { getUserWallet, getTransactions, Transaction } from "@/lib/wallet";
+import { useNavigate } from "react-router-dom";
 
 const MonCompte = () => {
   const { toast } = useToast();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [balance, setBalance] = useState<number>(0);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   
   // État pour les informations du profil
   const [profileData, setProfileData] = useState({
@@ -40,11 +46,17 @@ const MonCompte = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
 
-  // Charger les commandes de l'utilisateur
+  // Charger les données de l'utilisateur
   useEffect(() => {
     if (user) {
       const userOrders = getUserOrders(user.id);
       setOrders(userOrders);
+      
+      const wallet = getUserWallet(user.id);
+      setBalance(wallet.balance);
+      
+      const userTransactions = getTransactions(user.id);
+      setTransactions(userTransactions);
     }
   }, [user]);
 
@@ -57,7 +69,6 @@ const MonCompte = () => {
   };
 
   const handleSaveProfile = () => {
-    // Validation simple
     if (!profileData.firstName || !profileData.lastName || !profileData.email) {
       toast({
         title: "Erreur",
@@ -67,7 +78,6 @@ const MonCompte = () => {
       return;
     }
 
-    // Sauvegarder dans le localStorage
     localStorage.setItem("userProfile", JSON.stringify(profileData));
     
     toast({
@@ -77,7 +87,6 @@ const MonCompte = () => {
   };
 
   const handleChangePassword = () => {
-    // Validation
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
       toast({
         title: "Erreur",
@@ -105,7 +114,6 @@ const MonCompte = () => {
       return;
     }
 
-    // Réinitialiser le formulaire
     setPasswordData({
       currentPassword: "",
       newPassword: "",
@@ -119,7 +127,6 @@ const MonCompte = () => {
   };
 
   const handleDeleteAccount = () => {
-    // Supprimer toutes les données utilisateur
     localStorage.removeItem("userProfile");
     localStorage.removeItem("cart");
     
@@ -130,7 +137,6 @@ const MonCompte = () => {
     
     setIsDeleteDialogOpen(false);
     
-    // Redirection après suppression
     setTimeout(() => {
       window.location.href = "/";
     }, 2000);
@@ -150,8 +156,12 @@ const MonCompte = () => {
             <h1 className="text-4xl font-bold">Mon Compte</h1>
           </div>
 
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
+          <Tabs defaultValue="wallet" className="space-y-6">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4">
+              <TabsTrigger value="wallet">
+                <Wallet className="w-4 h-4 mr-2" />
+                Portefeuille
+              </TabsTrigger>
               <TabsTrigger value="profile">
                 <User className="w-4 h-4 mr-2" />
                 Profil
@@ -165,6 +175,78 @@ const MonCompte = () => {
                 Paramètres
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="wallet">
+              <Card className="p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-2">Mon Portefeuille</h2>
+                    <p className="text-muted-foreground">Gérez votre solde et rechargez votre compte</p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-6">
+                    <p className="text-sm text-muted-foreground mb-2">Solde disponible</p>
+                    <p className="text-4xl font-bold mb-4">{balance.toFixed(2)} €</p>
+                    <Button onClick={() => navigate("/alimenter-compte")}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Alimenter mon compte
+                    </Button>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h3 className="font-semibold mb-4">Historique des transactions</h3>
+                    {transactions.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-8">
+                        Aucune transaction pour le moment
+                      </p>
+                    ) : (
+                      <div className="border rounded-lg overflow-hidden">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Date</TableHead>
+                              <TableHead>Type</TableHead>
+                              <TableHead>Description</TableHead>
+                              <TableHead className="text-right">Montant</TableHead>
+                              <TableHead>Statut</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {transactions.map((transaction) => (
+                              <TableRow key={transaction.id}>
+                                <TableCell className="text-sm">{transaction.date}</TableCell>
+                                <TableCell>
+                                  <span className={`text-xs px-2 py-1 rounded ${
+                                    transaction.type === 'recharge' 
+                                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                      : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                  }`}>
+                                    {transaction.type === 'recharge' ? 'Rechargement' : 'Paiement'}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-sm">{transaction.description}</TableCell>
+                                <TableCell className={`text-right font-semibold ${
+                                  transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                                }`}>
+                                  {transaction.amount > 0 ? '+' : ''}{transaction.amount.toFixed(2)} €
+                                </TableCell>
+                                <TableCell>
+                                  <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    {transaction.status}
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
 
             <TabsContent value="profile">
               <Card className="p-6">
@@ -292,10 +374,7 @@ const MonCompte = () => {
                           onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
                         />
                       </div>
-                      <Button onClick={() => {
-                        handleChangePassword();
-                        setIsPasswordChangeOpen(true);
-                      }}>Modifier le mot de passe</Button>
+                      <Button onClick={handleChangePassword}>Modifier le mot de passe</Button>
                     </div>
                   </div>
                   <Separator />
@@ -432,11 +511,8 @@ const MonCompte = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteAccount}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Oui, supprimer mon compte
+            <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground">
+              Supprimer mon compte
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

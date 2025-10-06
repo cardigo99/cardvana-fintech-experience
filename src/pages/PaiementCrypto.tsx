@@ -12,33 +12,43 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { getCart, clearCart } from "@/lib/cart";
 import { saveOrder } from "@/lib/orders";
+import { deductBalance, getBalance } from "@/lib/wallet";
 import walletQR from "@/assets/wallet-qr.jpeg";
 
 const PaiementCrypto = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
-  const walletAddress = "0x37B70E97244EAcfBA47EAc8b27Adb1536C808FfC";
+  const [isProcessing, setIsProcessing] = useState(false);
+  const walletAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb";
   
   const [paymentDetails, setPaymentDetails] = useState({
     amount: 0,
     subtotal: 0,
     discount: 0,
-    promoCode: ""
+    promoCode: "",
+    method: "crypto"
   });
 
   useEffect(() => {
-    const amount = parseFloat(localStorage.getItem('payment_amount') || '0');
-    const subtotal = parseFloat(localStorage.getItem('payment_subtotal') || '0');
-    const discount = parseFloat(localStorage.getItem('payment_discount') || '0');
-    const promoCode = localStorage.getItem('payment_promo') || '';
+    const amount = localStorage.getItem('paymentAmount');
+    const subtotal = localStorage.getItem('paymentSubtotal');
+    const discount = localStorage.getItem('paymentDiscount');
+    const promoCode = localStorage.getItem('paymentPromoCode');
+    const method = localStorage.getItem('paymentMethod') || 'crypto';
     
-    if (amount === 0) {
-      navigate("/panier");
+    if (!amount) {
+      navigate('/panier');
       return;
     }
-    
-    setPaymentDetails({ amount, subtotal, discount, promoCode });
+
+    setPaymentDetails({
+      amount: parseFloat(amount),
+      subtotal: parseFloat(subtotal || amount),
+      discount: parseFloat(discount || '0'),
+      promoCode: promoCode || '',
+      method
+    });
   }, [navigate]);
 
   const handleCopy = () => {
@@ -51,53 +61,86 @@ const PaiementCrypto = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePaymentConfirm = () => {
+  const handlePaymentConfirm = async () => {
     if (!user) {
       toast({
         title: "Erreur",
-        description: "Vous devez être connecté pour effectuer un paiement",
-        variant: "destructive"
+        description: "Vous devez être connecté pour confirmer le paiement",
+        variant: "destructive",
       });
-      navigate("/auth");
       return;
     }
 
-    toast({
-      title: "Paiement en cours de vérification",
-      description: "Nous vérifions votre transaction...",
-    });
-    
-    // Récupérer les articles du panier
-    const cartItems = getCart();
-    
-    // Sauvegarder la commande
-    const order = saveOrder(user.id, {
-      items: cartItems.map(item => ({
-        brand: item.brand,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      })),
-      subtotal: paymentDetails.subtotal,
-      discount: paymentDetails.discount,
-      promoCode: paymentDetails.promoCode,
-      total: paymentDetails.amount,
-      paymentMethod: "Crypto (USDT)"
-    });
-    
-    // Vider le panier
-    clearCart();
-    
-    // Nettoyer les données de paiement
-    localStorage.removeItem('payment_amount');
-    localStorage.removeItem('payment_subtotal');
-    localStorage.removeItem('payment_discount');
-    localStorage.removeItem('payment_promo');
-    
-    // Simulation de vérification
+    setIsProcessing(true);
+
     setTimeout(() => {
-      navigate("/confirmation-commande");
-    }, 1500);
+      const cartItems = getCart();
+      let paymentMethod = "Crypto (USDT ERC-20)";
+      
+      if (paymentDetails.method === 'balance') {
+        const balance = getBalance(user.id);
+        
+        if (balance < paymentDetails.amount) {
+          toast({
+            title: "Solde insuffisant",
+            description: "Veuillez recharger votre compte",
+            variant: "destructive",
+          });
+          setIsProcessing(false);
+          return;
+        }
+        
+        const success = deductBalance(
+          user.id, 
+          paymentDetails.amount, 
+          `Achat de cartes cadeaux - ${cartItems.length} article(s)`
+        );
+        
+        if (!success) {
+          toast({
+            title: "Erreur de paiement",
+            description: "Impossible de débiter votre solde",
+            variant: "destructive",
+          });
+          setIsProcessing(false);
+          return;
+        }
+        
+        paymentMethod = "Solde Cardvana";
+      }
+      
+      const order = saveOrder(user.id, {
+        items: cartItems.map(item => ({
+          brand: item.brand,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        subtotal: paymentDetails.subtotal,
+        discount: paymentDetails.discount,
+        promoCode: paymentDetails.promoCode,
+        total: paymentDetails.amount,
+        paymentMethod,
+      });
+
+      clearCart();
+      
+      localStorage.removeItem('paymentAmount');
+      localStorage.removeItem('paymentSubtotal');
+      localStorage.removeItem('paymentDiscount');
+      localStorage.removeItem('paymentPromoCode');
+      localStorage.removeItem('paymentMethod');
+
+      toast({
+        title: "Paiement confirmé",
+        description: "Votre commande est en cours de traitement",
+      });
+
+      setIsProcessing(false);
+      navigate("/confirmation-commande", { 
+        state: { order }
+      });
+    }, 2000);
   };
 
   return (
@@ -122,9 +165,13 @@ const PaiementCrypto = () => {
                   <Wallet className="w-8 h-8 text-primary" />
                 </div>
               </div>
-              <h1 className="text-4xl font-bold">Paiement Crypto</h1>
+              <h1 className="text-4xl font-bold">
+                {paymentDetails.method === 'balance' ? 'Confirmation de paiement' : 'Paiement Crypto'}
+              </h1>
               <p className="text-muted-foreground">
-                Envoyez le montant exact en USDT à l'adresse ci-dessous
+                {paymentDetails.method === 'balance' 
+                  ? 'Confirmez votre achat avec votre solde Cardvana' 
+                  : 'Envoyez le montant exact en USDT à l\'adresse ci-dessous'}
               </p>
             </div>
 
@@ -136,10 +183,12 @@ const PaiementCrypto = () => {
                       <p className="text-sm text-muted-foreground">Sous-total</p>
                       <p className="text-2xl font-bold">{paymentDetails.subtotal.toFixed(2)} €</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Réseau</p>
-                      <p className="font-semibold">ERC-20 (Ethereum)</p>
-                    </div>
+                    {paymentDetails.method !== 'balance' && (
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Réseau</p>
+                        <p className="font-semibold">ERC-20 (Ethereum)</p>
+                      </div>
+                    )}
                   </div>
                   {paymentDetails.discount > 0 && (
                     <>
@@ -159,94 +208,128 @@ const PaiementCrypto = () => {
                   </div>
                 </div>
 
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label>Adresse du portefeuille</Label>
-                  <div className="flex gap-2">
-                    <Input 
-                      value={walletAddress} 
-                      readOnly 
-                      className="font-mono text-sm"
-                    />
-                    <Button 
-                      onClick={handleCopy}
-                      variant="outline"
-                      className="shrink-0"
-                    >
-                      {copied ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </Button>
+                {paymentDetails.method === 'balance' ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Paiement avec votre solde</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Le montant sera débité de votre solde Cardvana
+                    </p>
+                    <div className="flex gap-4 justify-center">
+                      <Button
+                        variant="outline"
+                        onClick={() => navigate("/panier")}
+                        disabled={isProcessing}
+                      >
+                        Annuler
+                      </Button>
+                      <Button
+                        onClick={handlePaymentConfirm}
+                        disabled={isProcessing}
+                        size="lg"
+                      >
+                        {isProcessing ? "Traitement..." : "Confirmer le paiement"}
+                      </Button>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Copiez cette adresse et envoyez exactement {paymentDetails.amount.toFixed(2)} € en USDT depuis votre portefeuille crypto
-                  </p>
-                </div>
+                ) : (
+                  <>
+                    <Separator />
 
-                <Separator />
+                    <div className="space-y-3">
+                      <Label>Adresse du portefeuille</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          value={walletAddress} 
+                          readOnly 
+                          className="font-mono text-sm"
+                        />
+                        <Button 
+                          onClick={handleCopy}
+                          variant="outline"
+                          className="shrink-0"
+                        >
+                          {copied ? (
+                            <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Copiez cette adresse et envoyez exactement {paymentDetails.amount.toFixed(2)} € en USDT depuis votre portefeuille crypto
+                      </p>
+                    </div>
 
-                <div className="space-y-3">
-                  <Label>Scanner le QR Code</Label>
-                  <div className="flex justify-center p-4 bg-white rounded-lg">
-                    <img 
-                      src={walletQR} 
-                      alt="QR Code du portefeuille" 
-                      className="w-48 h-48 object-contain"
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground text-center">
-                    Scannez ce QR code avec votre application crypto pour payer rapidement
-                  </p>
-                </div>
+                    <Separator />
 
-                <Separator />
+                    <div className="space-y-3">
+                      <Label>Scanner le QR Code</Label>
+                      <div className="flex justify-center p-4 bg-white rounded-lg">
+                        <img 
+                          src={walletQR} 
+                          alt="QR Code du portefeuille" 
+                          className="w-48 h-48 object-contain"
+                        />
+                      </div>
+                      <p className="text-sm text-muted-foreground text-center">
+                        Scannez ce QR code avec votre application crypto pour payer rapidement
+                      </p>
+                    </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                  <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
-                    ⚠️ Instructions importantes
-                  </h3>
-                  <ul className="space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
-                    <li>• Envoyez uniquement des USDT (Tether)</li>
-                    <li>• Utilisez le réseau ERC-20 (Ethereum)</li>
-                    <li>• Vérifiez bien l'adresse avant d'envoyer</li>
-                    <li>• Indiquez votre email dans le libellé du virement pour l'authentification</li>
-                  </ul>
-                </div>
-              </div>
+                    <Separator />
 
-              <div className="space-y-3 pt-4">
-                <Button 
-                  className="w-full" 
-                  size="lg"
-                  onClick={handlePaymentConfirm}
-                >
-                  J'ai effectué le paiement
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => navigate("/panier")}
-                >
-                  Annuler
-                </Button>
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                      <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                        ⚠️ Instructions importantes
+                      </h3>
+                      <ul className="space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
+                        <li>• Envoyez uniquement des USDT (Tether)</li>
+                        <li>• Utilisez le réseau ERC-20 (Ethereum)</li>
+                        <li>• Vérifiez bien l'adresse avant d'envoyer</li>
+                        <li>• Le montant sera converti automatiquement</li>
+                      </ul>
+                    </div>
+
+                    <div className="space-y-3 pt-4">
+                      <Button 
+                        className="w-full" 
+                        size="lg"
+                        onClick={handlePaymentConfirm}
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? "Traitement..." : "J'ai effectué le paiement"}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => navigate("/panier")}
+                        disabled={isProcessing}
+                      >
+                        Annuler
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
             </Card>
 
-            <Card className="p-6 bg-muted/50">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary" />
-                Après le paiement
-              </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>1. Cliquez sur "J'ai effectué le paiement"</li>
-                <li>2. Nous vérifions automatiquement votre transaction</li>
-                <li>3. Vous recevrez vos codes par email sous 1 minute</li>
-                <li>4. Les codes seront également disponibles dans votre compte</li>
-              </ul>
-            </Card>
+            {paymentDetails.method !== 'balance' && (
+              <Card className="p-6 bg-muted/50">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary" />
+                  Après le paiement
+                </h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>1. Cliquez sur "J'ai effectué le paiement"</li>
+                  <li>2. Nous vérifions automatiquement votre transaction</li>
+                  <li>3. Vous recevrez vos codes par email sous 24-48h</li>
+                  <li>4. Les codes seront également disponibles dans votre compte</li>
+                </ul>
+              </Card>
+            )}
           </div>
         </div>
       </main>

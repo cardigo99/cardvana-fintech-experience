@@ -5,18 +5,27 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, ShoppingBag, Trash2, Tag } from "lucide-react";
 import { useState, useEffect } from "react";
-import { getCart, saveCart, updateCartItemQuantity, removeFromCart, CartItem } from "@/lib/cart";
+import { useNavigate } from "react-router-dom";
+import { getCart, saveCart, updateCartItemQuantity, removeFromCart, type CartItem } from "@/lib/cart";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { getBalance } from "@/lib/wallet";
 
 const Panier = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number } | null>(null);
+  const [userBalance, setUserBalance] = useState<number>(0);
 
   useEffect(() => {
     setCartItems(getCart());
-  }, []);
+    if (user) {
+      setUserBalance(getBalance(user.id));
+    }
+  }, [user]);
 
   const updateQuantity = (id: string, change: number) => {
     updateCartItemQuantity(id, change);
@@ -55,6 +64,31 @@ const Panier = () => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discount = appliedPromo ? (subtotal * appliedPromo.discount) / 100 : 0;
   const total = subtotal - discount;
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour passer commande",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    localStorage.setItem('paymentAmount', total.toString());
+    localStorage.setItem('paymentSubtotal', subtotal.toString());
+    localStorage.setItem('paymentDiscount', discount.toString());
+    localStorage.setItem('paymentPromoCode', appliedPromo?.code || '');
+    
+    if (userBalance >= total) {
+      localStorage.setItem('paymentMethod', 'balance');
+    } else {
+      localStorage.setItem('paymentMethod', 'crypto');
+    }
+    
+    navigate("/paiement-crypto");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -183,23 +217,29 @@ const Panier = () => {
                       <span>{total.toFixed(2)}€</span>
                     </div>
                   </div>
-                  <Button className="w-full mt-6" size="lg" asChild>
-                    <a 
-                      href="/paiement-crypto"
-                      onClick={() => {
-                        localStorage.setItem('payment_amount', total.toFixed(2));
-                        localStorage.setItem('payment_subtotal', subtotal.toFixed(2));
-                        if (appliedPromo) {
-                          localStorage.setItem('payment_discount', discount.toFixed(2));
-                          localStorage.setItem('payment_promo', appliedPromo.code);
-                        } else {
-                          localStorage.removeItem('payment_discount');
-                          localStorage.removeItem('payment_promo');
-                        }
-                      }}
-                    >
-                      Procéder au paiement
-                    </a>
+                  
+                  {user && userBalance >= total && (
+                    <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm mt-4">
+                      <p className="text-green-700 dark:text-green-400 font-medium">
+                        ✓ Vous pouvez payer avec votre solde ({userBalance.toFixed(2)} €)
+                      </p>
+                    </div>
+                  )}
+                  
+                  {user && userBalance < total && userBalance > 0 && (
+                    <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm mt-4">
+                      <p className="text-amber-700 dark:text-amber-400">
+                        Solde insuffisant ({userBalance.toFixed(2)} €). Paiement crypto requis.
+                      </p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full mt-6"
+                    onClick={handleCheckout}
+                  >
+                    {user && userBalance >= total ? 'Payer avec mon solde' : 'Passer au paiement'}
                   </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
                     <a href="/">Continuer mes achats</a>
