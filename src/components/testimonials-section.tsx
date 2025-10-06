@@ -13,7 +13,7 @@ export const TestimonialsSection = () => {
     {
       name: "Pierre Martin",
       role: "CEO, StartupLab", 
-      content: "La qualité des cartes est exceptionnelle et le service ultra-rapide. En 1 minute, nos clients reçoivent leurs cartes cadeaux.",
+      content: "La qualité des cartes est exceptionnelle et le service ultra-rapide. Instantanément, nos clients reçoivent leurs cartes cadeaux.",
       rating: 5,
       avatar: "👨‍💻"
     },
