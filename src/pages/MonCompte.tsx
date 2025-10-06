@@ -146,14 +146,8 @@ const MonCompte = () => {
       <Navigation />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8">
             <h1 className="text-4xl font-bold">Mon Compte</h1>
-            {user && (
-              <Button variant="outline" onClick={logout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Déconnexion
-              </Button>
-            )}
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
