@@ -121,16 +121,15 @@ const AlimenterCompte = () => {
               />
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
-              <h4 className="font-semibold text-sm flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                Instructions importantes
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                ⚠️ Instructions importantes
               </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground ml-6 list-disc">
-                <li>Envoyez l'équivalent du montant en USDT (ERC-20)</li>
-                <li>La conversion se fait automatiquement en euros</li>
-                <li>Le solde sera ajouté après confirmation</li>
-                <li>Conservez votre preuve de transaction</li>
+              <ul className="space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
+                <li>• Envoyez uniquement des USDT (Tether)</li>
+                <li>• Utilisez le réseau ERC-20 (Ethereum)</li>
+                <li>• Vérifiez bien l'adresse avant d'envoyer</li>
+                <li>• Le montant sera converti automatiquement</li>
               </ul>
             </div>
 
