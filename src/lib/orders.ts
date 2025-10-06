@@ -20,6 +20,9 @@ export interface Order {
 export const saveOrder = (userId: string, orderData: Omit<Order, 'id' | 'userId' | 'date' | 'status' | 'transactionId'>): Order => {
   const orders = getOrders();
   
+  // Si paiement par solde Cardvana, le statut est "Livrée", sinon "En cours de vérification"
+  const status = orderData.paymentMethod === 'Solde Cardvana' ? 'Livrée' : 'En cours de vérification';
+  
   const newOrder: Order = {
     ...orderData,
     id: `CMD${Date.now()}`,
@@ -29,7 +32,7 @@ export const saveOrder = (userId: string, orderData: Omit<Order, 'id' | 'userId'
       month: 'long', 
       day: 'numeric' 
     }),
-    status: 'En cours de vérification',
+    status,
     transactionId: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
   };
   
