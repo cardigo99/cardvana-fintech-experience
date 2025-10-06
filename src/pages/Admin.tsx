@@ -11,7 +11,6 @@ import { toast } from "@/hooks/use-toast";
 import { addBalance } from "@/lib/wallet";
 import { getOrders, updateOrderStatus, type Order } from "@/lib/orders";
 import { createGiftCards } from "@/lib/giftcards";
-import { getCart } from "@/lib/cart";
 
 interface PendingRecharge {
   id: string;
@@ -22,6 +21,7 @@ interface PendingRecharge {
 }
 
 const Admin = () => {
+  console.log("Admin component loaded");
   const navigate = useNavigate();
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
