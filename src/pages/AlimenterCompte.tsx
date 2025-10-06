@@ -144,7 +144,7 @@ const AlimenterCompte = () => {
               <Button
                 className="flex-1"
                 onClick={handleConfirm}
-                disabled={isProcessing || amount <= 0}
+                disabled={isProcessing}
               >
                 {isProcessing ? "Traitement..." : "J'ai effectué le paiement"}
               </Button>
