@@ -54,7 +54,7 @@ const Admin = () => {
 
   const handleAdminLogin = () => {
     // Mot de passe admin simple (à améliorer avec une vraie authentification)
-    if (adminPassword === 'admin123') {
+    if (adminPassword === 'azerty93270') {
       setIsAuthenticated(true);
       localStorage.setItem('isAdmin', 'true');
       loadPendingTransactions();
