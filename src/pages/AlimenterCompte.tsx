@@ -154,7 +154,7 @@ const AlimenterCompte = () => {
           <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
             <p className="text-sm text-muted-foreground">
               ⚠️ Après avoir envoyé le paiement, cliquez sur "J'ai effectué le paiement". 
-              Votre rechargement sera vérifié et le montant ajouté à votre solde sous 1 minute.
+              Votre rechargement sera vérifié et le montant ajouté à votre solde.
             </p>
           </div>
         </div>
