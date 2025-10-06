@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const MonCompte = () => {
   const { toast } = useToast();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [balance, setBalance] = useState<number>(0);
@@ -52,10 +52,10 @@ const MonCompte = () => {
 
   // Redirection si non connecté
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate('/auth');
     }
-  }, [user, navigate]);
+  }, [user, isLoading, navigate]);
 
   // Charger les données de l'utilisateur
   useEffect(() => {
@@ -187,8 +187,19 @@ const MonCompte = () => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) {
-    return null; // Ou un loader pendant la redirection
+    return null;
   }
 
   return (

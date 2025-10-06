@@ -21,7 +21,6 @@ interface PendingRecharge {
 }
 
 const Admin = () => {
-  console.log("Admin component loaded");
   const navigate = useNavigate();
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);

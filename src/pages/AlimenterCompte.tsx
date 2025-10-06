@@ -12,7 +12,7 @@ import walletQR from "@/assets/wallet-qr-new.jpeg";
 
 const AlimenterCompte = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [amount, setAmount] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -20,10 +20,10 @@ const AlimenterCompte = () => {
 
   // Redirection si non connecté
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate('/auth');
     }
-  }, [user, navigate]);
+  }, [user, isLoading, navigate]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(walletAddress);
@@ -83,6 +83,17 @@ const AlimenterCompte = () => {
     }, 2000);
   };
 
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return null;
