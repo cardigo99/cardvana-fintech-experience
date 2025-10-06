@@ -47,12 +47,28 @@ const AlimenterCompte = () => {
 
     setIsProcessing(true);
 
+    // Simuler l'envoi de la demande de vérification
     setTimeout(() => {
-      addBalance(user.id, amount, `Rechargement de ${amount} €`);
+      // Stocker la demande de rechargement en attente
+      const pendingRecharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
+      pendingRecharges.push({
+        id: `PENDING${Date.now()}`,
+        userId: user.id,
+        amount,
+        date: new Date().toLocaleDateString('fr-FR', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        status: 'En cours de vérification'
+      });
+      localStorage.setItem('pendingRecharges', JSON.stringify(pendingRecharges));
       
       toast({
-        title: "Rechargement confirmé",
-        description: `${amount} € ont été ajoutés à votre solde`,
+        title: "Demande envoyée",
+        description: "Votre rechargement est en cours de vérification",
       });
 
       setIsProcessing(false);

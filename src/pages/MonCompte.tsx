@@ -24,6 +24,7 @@ const MonCompte = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [pendingRecharges, setPendingRecharges] = useState<any[]>([]);
   
   // État pour les informations du profil
   const [profileData, setProfileData] = useState({
@@ -57,6 +58,11 @@ const MonCompte = () => {
       
       const userTransactions = getTransactions(user.id);
       setTransactions(userTransactions);
+      
+      // Charger les rechargements en attente
+      const pending = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
+      const userPending = pending.filter((p: any) => p.userId === user.id);
+      setPendingRecharges(userPending);
     }
   }, [user]);
 
@@ -191,6 +197,31 @@ const MonCompte = () => {
                       <Plus className="w-4 h-4 mr-2" />
                       Alimenter mon compte
                     </Button>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h3 className="font-semibold mb-4">Rechargements en attente</h3>
+                    {pendingRecharges.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-4 text-sm">
+                        Aucun rechargement en attente
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {pendingRecharges.map((recharge) => (
+                          <div key={recharge.id} className="flex items-center justify-between p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                            <div>
+                              <p className="font-medium text-sm">{recharge.amount.toFixed(2)} €</p>
+                              <p className="text-xs text-muted-foreground">{recharge.date}</p>
+                            </div>
+                            <span className="text-xs px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                              {recharge.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <Separator />
