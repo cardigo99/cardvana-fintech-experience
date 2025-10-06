@@ -94,6 +94,17 @@ const Panier = () => {
     navigate("/paiement-crypto");
   };
 
+  const handleGuestCheckout = () => {
+    localStorage.setItem('paymentAmount', total.toString());
+    localStorage.setItem('paymentSubtotal', subtotal.toString());
+    localStorage.setItem('paymentDiscount', discount.toString());
+    localStorage.setItem('paymentPromoCode', appliedPromo?.code || '');
+    localStorage.setItem('paymentMethod', 'crypto');
+    localStorage.setItem('isGuestCheckout', 'true');
+    
+    navigate("/paiement-crypto");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -261,13 +272,35 @@ const Panier = () => {
                       </Button>
                     </div>
                   ) : (
-                    <Button 
-                      size="lg" 
-                      className="w-full"
-                      onClick={() => handleCheckout('crypto')}
-                    >
-                      Passer au paiement
-                    </Button>
+                    <div className="space-y-3">
+                      <Button 
+                        size="lg" 
+                        className="w-full"
+                        onClick={() => handleCheckout('crypto')}
+                      >
+                        Passer au paiement
+                      </Button>
+                      
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-card px-2 text-muted-foreground">
+                            Ou
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        size="lg" 
+                        variant="secondary"
+                        className="w-full"
+                        onClick={handleGuestCheckout}
+                      >
+                        Payer en tant qu'invité
+                      </Button>
+                    </div>
                   )}
                   
                   <Button variant="outline" className="w-full mt-3" asChild>

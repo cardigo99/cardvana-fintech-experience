@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Copy, CheckCircle2, ArrowLeft, Wallet } from "lucide-react";
@@ -21,6 +22,9 @@ const PaiementCrypto = () => {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isGuestCheckout, setIsGuestCheckout] = useState(false);
+  const [guestEmail, setGuestEmail] = useState("");
+  const [showGuestDialog, setShowGuestDialog] = useState(false);
   const walletAddress = "0x37B70E97244EAcfBA47EAc8b27Adb1536C808FfC";
   
   const [paymentDetails, setPaymentDetails] = useState({
@@ -37,10 +41,16 @@ const PaiementCrypto = () => {
     const discount = localStorage.getItem('paymentDiscount');
     const promoCode = localStorage.getItem('paymentPromoCode');
     const method = localStorage.getItem('paymentMethod') || 'crypto';
+    const isGuest = localStorage.getItem('isGuestCheckout') === 'true';
     
     if (!amount) {
       navigate('/panier');
       return;
+    }
+
+    setIsGuestCheckout(isGuest);
+    if (isGuest && !user) {
+      setShowGuestDialog(true);
     }
 
     setPaymentDetails({
@@ -50,7 +60,7 @@ const PaiementCrypto = () => {
       promoCode: promoCode || '',
       method
     });
-  }, [navigate]);
+  }, [navigate, user]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(walletAddress);
@@ -63,7 +73,18 @@ const PaiementCrypto = () => {
   };
 
   const handlePaymentConfirm = async () => {
-    if (!user) {
+    // Validation pour les invités
+    if (isGuestCheckout && !user) {
+      if (!guestEmail || !guestEmail.includes('@')) {
+        toast({
+          title: "Email requis",
+          description: "Veuillez entrer une adresse email valide",
+          variant: "destructive",
+        });
+        setShowGuestDialog(true);
+        return;
+      }
+    } else if (!user) {
       toast({
         title: "Erreur",
         description: "Vous devez être connecté pour confirmer le paiement",
@@ -110,7 +131,8 @@ const PaiementCrypto = () => {
         paymentMethod = "Solde Cardvana";
       }
       
-      const order = saveOrder(user.id, {
+      const userId = user?.id || `GUEST-${guestEmail}`;
+      const order = saveOrder(userId, {
         items: cartItems.map(item => ({
           brand: item.brand,
           name: item.name,
@@ -126,9 +148,9 @@ const PaiementCrypto = () => {
 
       // Générer les codes uniquement pour les paiements par solde (déjà vérifiés)
       let giftCards = [];
-      if (paymentDetails.method === 'balance') {
+      if (paymentDetails.method === 'balance' && user) {
         giftCards = createGiftCards(
-          user.id,
+          userId,
           order.id,
           cartItems.map(item => ({
             brand: item.brand,
@@ -145,6 +167,7 @@ const PaiementCrypto = () => {
       localStorage.removeItem('paymentDiscount');
       localStorage.removeItem('paymentPromoCode');
       localStorage.removeItem('paymentMethod');
+      localStorage.removeItem('isGuestCheckout');
 
       if (paymentDetails.method === 'balance') {
         toast({
@@ -154,15 +177,29 @@ const PaiementCrypto = () => {
       } else {
         toast({
           title: "Commande enregistrée",
-          description: "Nous vérifions votre paiement. Vous recevrez vos codes après validation.",
+          description: isGuestCheckout 
+            ? `Nous vérifions votre paiement. Vous recevrez vos codes à ${guestEmail} après validation.`
+            : "Nous vérifions votre paiement. Vous recevrez vos codes après validation.",
         });
       }
 
       setIsProcessing(false);
       navigate("/confirmation-commande", { 
-        state: { order, giftCards }
+        state: { order, giftCards, isGuest: isGuestCheckout, guestEmail }
       });
     }, 2000);
+  };
+
+  const handleGuestEmailSubmit = () => {
+    if (!guestEmail || !guestEmail.includes('@')) {
+      toast({
+        title: "Email invalide",
+        description: "Veuillez entrer une adresse email valide",
+        variant: "destructive",
+      });
+      return;
+    }
+    setShowGuestDialog(false);
   };
 
   return (
@@ -356,6 +393,36 @@ const PaiementCrypto = () => {
           </div>
         </div>
       </main>
+
+      <Dialog open={showGuestDialog} onOpenChange={setShowGuestDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Paiement invité</DialogTitle>
+            <DialogDescription>
+              Veuillez entrer votre adresse email pour recevoir vos codes de cartes cadeaux après validation du paiement.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="guest-email">Adresse email *</Label>
+              <Input
+                id="guest-email"
+                type="email"
+                placeholder="votre@email.com"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleGuestEmailSubmit()}
+              />
+            </div>
+            <Button 
+              className="w-full" 
+              onClick={handleGuestEmailSubmit}
+            >
+              Continuer
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
