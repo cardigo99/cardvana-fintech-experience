@@ -21,6 +21,7 @@ import PaiementCrypto from "./pages/PaiementCrypto";
 import Auth from "./pages/Auth";
 import AlimenterCompte from "./pages/AlimenterCompte";
 
+// Initialize QueryClient
 const queryClient = new QueryClient();
 
 const App = () => (
