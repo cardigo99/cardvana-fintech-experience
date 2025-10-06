@@ -148,10 +148,12 @@ const MonCompte = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold">Mon Compte</h1>
-            <Button variant="outline" onClick={logout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Déconnexion
-            </Button>
+            {user && (
+              <Button variant="outline" onClick={logout}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Déconnexion
+              </Button>
+            )}
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
