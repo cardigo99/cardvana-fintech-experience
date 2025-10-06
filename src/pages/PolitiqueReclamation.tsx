@@ -59,7 +59,7 @@ const PolitiqueReclamation = () => {
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-4">5. Délais de traitement</h2>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Vous recevrez une réponse de notre part dans un délai de 14 jours ouvrables maximum.</li>
+                <li>Vous recevrez une réponse de notre part dans un délai de 3 jours ouvrables maximum.</li>
                 <li>Si des circonstances particulières nécessitent un délai plus long, nous vous en informerons rapidement.</li>
                 <li>La réponse sera envoyée à l'adresse e-mail indiquée lors de la réclamation.</li>
               </ul>
