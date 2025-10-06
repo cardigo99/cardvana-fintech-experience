@@ -23,10 +23,18 @@ export const saveGiftCards = (cards: GiftCard[]): void => {
 };
 
 export const generateGiftCardCode = (brand: string): string => {
-  const prefix = brand.substring(0, 3).toUpperCase();
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `${prefix}-${timestamp}-${random}`;
+  // Générer un code aléatoire au format XXXX-XXXX-XXXX-XXXX
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const segments = 4;
+  const segmentLength = 4;
+  
+  const code = Array.from({ length: segments }, () => {
+    return Array.from({ length: segmentLength }, () => {
+      return chars.charAt(Math.floor(Math.random() * chars.length));
+    }).join('');
+  }).join('-');
+  
+  return code;
 };
 
 export const createGiftCards = (
