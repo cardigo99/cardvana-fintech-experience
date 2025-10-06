@@ -145,6 +145,7 @@ const AlimenterCompte = () => {
                 <li>• Envoyez uniquement des USDT (Tether)</li>
                 <li>• Utilisez le réseau ERC-20 (Ethereum)</li>
                 <li>• Vérifiez bien l'adresse avant d'envoyer</li>
+                <li>• <strong>Ajoutez votre adresse email dans le libellé du virement</strong> pour l'authentification</li>
                 <li>• Le montant sera converti automatiquement</li>
               </ul>
             </div>
