@@ -65,7 +65,7 @@ const Panier = () => {
   const discount = appliedPromo ? (subtotal * appliedPromo.discount) / 100 : 0;
   const total = subtotal - discount;
 
-  const handleCheckout = () => {
+  const handleCheckout = (paymentMethod: 'balance' | 'crypto') => {
     if (!user) {
       toast({
         title: "Connexion requise",
@@ -76,16 +76,20 @@ const Panier = () => {
       return;
     }
 
+    if (paymentMethod === 'balance' && userBalance < total) {
+      toast({
+        title: "Solde insuffisant",
+        description: "Veuillez recharger votre compte ou choisir le paiement crypto",
+        variant: "destructive",
+      });
+      return;
+    }
+
     localStorage.setItem('paymentAmount', total.toString());
     localStorage.setItem('paymentSubtotal', subtotal.toString());
     localStorage.setItem('paymentDiscount', discount.toString());
     localStorage.setItem('paymentPromoCode', appliedPromo?.code || '');
-    
-    if (userBalance >= total) {
-      localStorage.setItem('paymentMethod', 'balance');
-    } else {
-      localStorage.setItem('paymentMethod', 'crypto');
-    }
+    localStorage.setItem('paymentMethod', paymentMethod);
     
     navigate("/paiement-crypto");
   };
@@ -218,29 +222,54 @@ const Panier = () => {
                     </div>
                   </div>
                   
-                  {user && userBalance >= total && (
-                    <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm mt-4">
-                      <p className="text-green-700 dark:text-green-400 font-medium">
-                        ✓ Vous pouvez payer avec votre solde ({userBalance.toFixed(2)} €)
-                      </p>
+                  {user && userBalance >= total ? (
+                    <div className="space-y-3">
+                      <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm">
+                        <p className="text-green-700 dark:text-green-400 font-medium">
+                          ✓ Solde disponible : {userBalance.toFixed(2)} €
+                        </p>
+                      </div>
+                      <Button 
+                        size="lg" 
+                        className="w-full"
+                        onClick={() => handleCheckout('balance')}
+                      >
+                        Payer avec mon solde
+                      </Button>
+                      <Button 
+                        size="lg" 
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => handleCheckout('crypto')}
+                      >
+                        Payer par crypto
+                      </Button>
                     </div>
+                  ) : user && userBalance < total && userBalance > 0 ? (
+                    <div className="space-y-3">
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm">
+                        <p className="text-amber-700 dark:text-amber-400">
+                          Solde insuffisant ({userBalance.toFixed(2)} €). Paiement crypto requis.
+                        </p>
+                      </div>
+                      <Button 
+                        size="lg" 
+                        className="w-full"
+                        onClick={() => handleCheckout('crypto')}
+                      >
+                        Passer au paiement crypto
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      size="lg" 
+                      className="w-full"
+                      onClick={() => handleCheckout('crypto')}
+                    >
+                      Passer au paiement
+                    </Button>
                   )}
                   
-                  {user && userBalance < total && userBalance > 0 && (
-                    <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm mt-4">
-                      <p className="text-amber-700 dark:text-amber-400">
-                        Solde insuffisant ({userBalance.toFixed(2)} €). Paiement crypto requis.
-                      </p>
-                    </div>
-                  )}
-                  
-                  <Button 
-                    size="lg" 
-                    className="w-full mt-6"
-                    onClick={handleCheckout}
-                  >
-                    {user && userBalance >= total ? 'Payer avec mon solde' : 'Passer au paiement'}
-                  </Button>
                   <Button variant="outline" className="w-full mt-3" asChild>
                     <a href="/">Continuer mes achats</a>
                   </Button>
