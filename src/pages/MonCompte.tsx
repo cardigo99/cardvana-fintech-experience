@@ -50,6 +50,13 @@ const MonCompte = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
 
+  // Redirection si non connecté
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
+
   // Charger les données de l'utilisateur
   useEffect(() => {
     if (user) {
@@ -179,6 +186,10 @@ const MonCompte = () => {
       description: "Le code a été copié dans le presse-papiers",
     });
   };
+
+  if (!user) {
+    return null; // Ou un loader pendant la redirection
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

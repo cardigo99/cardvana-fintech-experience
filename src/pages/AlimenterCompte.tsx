@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
@@ -17,6 +17,13 @@ const AlimenterCompte = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   
   const walletAddress = "0x37B70E97244EAcfBA47EAc8b27Adb1536C808FfC";
+
+  // Redirection si non connecté
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(walletAddress);
@@ -75,6 +82,11 @@ const AlimenterCompte = () => {
       navigate("/mon-compte");
     }, 2000);
   };
+
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
