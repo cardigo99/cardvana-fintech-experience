@@ -202,22 +202,31 @@ const MonCompte = () => {
                   <Separator />
 
                   <div>
-                    <h3 className="font-semibold mb-4">Rechargements en attente</h3>
+                    <h3 className="font-semibold mb-4">Rechargements en attente de vérification</h3>
                     {pendingRecharges.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-4 text-sm">
+                      <p className="text-muted-foreground text-center py-8 text-sm">
                         Aucun rechargement en attente
                       </p>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {pendingRecharges.map((recharge) => (
-                          <div key={recharge.id} className="flex items-center justify-between p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                            <div>
-                              <p className="font-medium text-sm">{recharge.amount.toFixed(2)} €</p>
-                              <p className="text-xs text-muted-foreground">{recharge.date}</p>
+                          <div key={recharge.id} className="border rounded-lg p-4 bg-card hover:bg-muted/50 transition-colors">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <p className="font-semibold text-lg">{recharge.amount.toFixed(2)} €</p>
+                                  <span className="text-xs px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                                    {recharge.status}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  Demandé le {recharge.date}
+                                </p>
+                              </div>
                             </div>
-                            <span className="text-xs px-2 py-1 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                              {recharge.status}
-                            </span>
+                            <p className="text-xs text-muted-foreground mt-2 p-2 bg-muted/50 rounded">
+                              💡 Votre rechargement sera vérifié et ajouté à votre solde une fois la transaction confirmée
+                            </p>
                           </div>
                         ))}
                       </div>
