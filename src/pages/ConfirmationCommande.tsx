@@ -86,7 +86,7 @@ const ConfirmationCommande = () => {
                   </h3>
                   <ul className="space-y-2 text-sm text-yellow-800 dark:text-yellow-200">
                     <li>• Nous vérifions votre transaction sur la blockchain</li>
-                    <li>• Cette vérification peut prendre quelques minutes à quelques heures</li>
+                    <li>• Cette vérification peut prendre quelques minutes</li>
                     <li>• Vous recevrez vos codes par email instantanément après réception du paiement</li>
                     <li>• Assurez-vous que votre adresse email était bien dans le libellé du virement</li>
                   </ul>
