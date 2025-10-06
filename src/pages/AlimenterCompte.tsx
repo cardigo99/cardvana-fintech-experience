@@ -16,7 +16,7 @@ const AlimenterCompte = () => {
   const [amount, setAmount] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   
-  const walletAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb";
+  const walletAddress = "0x37B70E97244EAcfBA47EAc8b27Adb1536C808FfC";
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(walletAddress);
