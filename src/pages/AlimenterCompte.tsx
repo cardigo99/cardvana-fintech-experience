@@ -57,22 +57,32 @@ const AlimenterCompte = () => {
 
     // Simuler l'envoi de la demande de vérification
     setTimeout(async () => {
-      // Stocker la demande de rechargement en attente
-      await addPendingRecharge({
-        userId: user.id,
-        amount,
-        paymentMethod: 'Crypto (USDT ERC-20)',
-        status: 'En cours de vérification',
-        transactionId: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
-      });
-      
-      toast({
-        title: "Demande envoyée",
-        description: "Votre rechargement est en cours de vérification",
-      });
+      try {
+        // Stocker la demande de rechargement en attente
+        await addPendingRecharge({
+          userId: user.id,
+          amount,
+          paymentMethod: 'Crypto (USDT ERC-20)',
+          status: 'En cours de vérification',
+          transactionId: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}`,
+        });
 
-      setIsProcessing(false);
-      navigate("/mon-compte");
+        toast({
+          title: "Demande envoyée",
+          description: "Votre rechargement est en cours de vérification",
+        });
+
+        navigate("/mon-compte");
+      } catch (err: any) {
+        console.error("Erreur lors de l'ajout du rechargement:", err);
+        toast({
+          title: "Erreur d'envoi",
+          description: err?.message || "Impossible d'enregistrer votre demande. Réessayez.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessing(false);
+      }
     }, 2000);
   };
 

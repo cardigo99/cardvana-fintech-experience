@@ -180,19 +180,27 @@ const Admin = () => {
                 Gestion des transactions en attente
               </p>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setIsAuthenticated(false);
-                localStorage.removeItem('isAdmin');
-                toast({
-                  title: "Déconnexion",
-                  description: "Vous avez été déconnecté",
-                });
-              }}
-            >
-              Déconnexion
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                onClick={loadPendingTransactions}
+              >
+                Rafraîchir
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsAuthenticated(false);
+                  localStorage.removeItem('isAdmin');
+                  toast({
+                    title: "Déconnexion",
+                    description: "Vous avez été déconnecté",
+                  });
+                }}
+              >
+                Déconnexion
+              </Button>
+            </div>
           </div>
 
           <Tabs defaultValue="recharges" className="space-y-6">
