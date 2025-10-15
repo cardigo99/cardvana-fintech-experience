@@ -40,16 +40,15 @@ const Admin = () => {
   const loadPendingTransactions = () => {
     // Charger les rechargements en attente
     const recharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-    const pending = recharges.filter((r: PendingRecharge) => r.status === 'En cours de vérification');
-    setPendingRecharges(pending);
+    const pendingRecharges = recharges.filter((r: PendingRecharge) => r.status === 'En cours de vérification');
+    setPendingRecharges(pendingRecharges);
 
-    // Charger les commandes crypto en attente
+    // Charger toutes les commandes en attente (crypto, paysafecard, transcash, etc.)
     const allOrders = getOrders();
-    const cryptoPending = allOrders.filter(order => 
-      order.status === 'En cours de vérification' && 
-      order.paymentMethod === 'Crypto (USDT ERC-20)'
+    const pendingOrdersList = allOrders.filter(order => 
+      order.status === 'En cours de vérification'
     );
-    setPendingOrders(cryptoPending);
+    setPendingOrders(pendingOrdersList);
   };
 
   const handleAdminLogin = () => {
@@ -286,7 +285,7 @@ const Admin = () => {
 
             <TabsContent value="orders">
               <Card className="p-6">
-                <h2 className="text-2xl font-semibold mb-6">Commandes crypto en attente</h2>
+                <h2 className="text-2xl font-semibold mb-6">Commandes en attente de vérification</h2>
                 
                 {pendingOrders.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
@@ -298,6 +297,7 @@ const Admin = () => {
                       <TableRow>
                         <TableHead>Commande</TableHead>
                         <TableHead>User ID</TableHead>
+                        <TableHead>Mode de paiement</TableHead>
                         <TableHead>Articles</TableHead>
                         <TableHead>Total</TableHead>
                         <TableHead>Date</TableHead>
@@ -312,6 +312,9 @@ const Admin = () => {
                           </TableCell>
                           <TableCell className="font-mono text-sm">
                             {order.userId.substring(0, 8)}...
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {order.paymentMethod}
                           </TableCell>
                           <TableCell className="text-sm">
                             {order.items.length} article(s)
