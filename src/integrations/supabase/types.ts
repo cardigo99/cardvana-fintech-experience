@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gift_cards: {
+        Row: {
+          amount: number
+          brand: string
+          code: string
+          created_at: string
+          id: string
+          order_id: string
+          pin: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          brand: string
+          code: string
+          created_at?: string
+          id?: string
+          order_id: string
+          pin?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          brand?: string
+          code?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          pin?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_cards_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          date: string
+          discount: number
+          guest_email: string | null
+          id: string
+          items: Json
+          payment_method: string
+          promo_code: string | null
+          status: string
+          subtotal: number
+          total: number
+          transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          discount?: number
+          guest_email?: string | null
+          id: string
+          items: Json
+          payment_method: string
+          promo_code?: string | null
+          status: string
+          subtotal: number
+          total: number
+          transaction_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          discount?: number
+          guest_email?: string | null
+          id?: string
+          items?: Json
+          payment_method?: string
+          promo_code?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          transaction_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recharges: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payment_method: string
+          status: string
+          transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          payment_method: string
+          status: string
+          transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_method?: string
+          status?: string
+          transaction_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

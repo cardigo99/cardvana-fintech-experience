@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export interface GiftCard {
   id: string;
   userId: string;
@@ -9,21 +11,7 @@ export interface GiftCard {
   status: 'active' | 'used';
 }
 
-const GIFTCARDS_STORAGE_KEY = 'cardvana_giftcards';
-
-export const getGiftCards = (): GiftCard[] => {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(GIFTCARDS_STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
-};
-
-export const saveGiftCards = (cards: GiftCard[]): void => {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(GIFTCARDS_STORAGE_KEY, JSON.stringify(cards));
-};
-
-export const generateGiftCardCode = (brand: string): string => {
-  // Générer un code aléatoire au format XXXX-XXXX-XXXX-XXXX
+const generateGiftCardCode = (brand: string): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const segments = 4;
   const segmentLength = 4;
@@ -37,12 +25,11 @@ export const generateGiftCardCode = (brand: string): string => {
   return code;
 };
 
-export const createGiftCards = (
+export const createGiftCards = async (
   userId: string,
   orderId: string,
   items: Array<{ brand: string; quantity: number; price: number }>
-): GiftCard[] => {
-  const giftCards = getGiftCards();
+): Promise<GiftCard[]> => {
   const newCards: GiftCard[] = [];
 
   items.forEach(item => {
@@ -67,28 +54,119 @@ export const createGiftCards = (
     }
   });
 
-  giftCards.push(...newCards);
-  saveGiftCards(giftCards);
+  const { error } = await supabase.from('gift_cards').insert(
+    newCards.map(card => ({
+      user_id: card.userId,
+      order_id: card.orderId,
+      brand: card.brand,
+      code: card.code,
+      pin: null,
+      amount: card.amount,
+      status: card.status,
+    }))
+  );
+
+  if (error) {
+    console.error('Error creating gift cards:', error);
+    throw error;
+  }
   
   return newCards;
 };
 
-export const getUserGiftCards = (userId: string): GiftCard[] => {
-  const cards = getGiftCards();
-  return cards.filter(card => card.userId === userId);
-};
-
-export const getGiftCardsByOrder = (orderId: string): GiftCard[] => {
-  const cards = getGiftCards();
-  return cards.filter(card => card.orderId === orderId);
-};
-
-export const markGiftCardAsUsed = (cardId: string): void => {
-  const cards = getGiftCards();
-  const cardIndex = cards.findIndex(c => c.id === cardId);
+export const getGiftCards = async (): Promise<GiftCard[]> => {
+  const { data, error } = await supabase.from('gift_cards').select('*').order('created_at', { ascending: false });
   
-  if (cardIndex !== -1) {
-    cards[cardIndex].status = 'used';
-    saveGiftCards(cards);
+  if (error) {
+    console.error('Error fetching gift cards:', error);
+    return [];
+  }
+  
+  return (data || []).map(card => ({
+    id: card.id,
+    userId: card.user_id,
+    orderId: card.order_id,
+    brand: card.brand,
+    code: card.code,
+    amount: Number(card.amount),
+    purchaseDate: new Date(card.created_at).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    status: card.status as 'active' | 'used',
+  }));
+};
+
+export const getUserGiftCards = async (userId: string): Promise<GiftCard[]> => {
+  const { data, error } = await supabase
+    .from('gift_cards')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching user gift cards:', error);
+    return [];
+  }
+  
+  return (data || []).map(card => ({
+    id: card.id,
+    userId: card.user_id,
+    orderId: card.order_id,
+    brand: card.brand,
+    code: card.code,
+    amount: Number(card.amount),
+    purchaseDate: new Date(card.created_at).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    status: card.status as 'active' | 'used',
+  }));
+};
+
+export const getGiftCardsByOrder = async (orderId: string): Promise<GiftCard[]> => {
+  const { data, error } = await supabase
+    .from('gift_cards')
+    .select('*')
+    .eq('order_id', orderId);
+  
+  if (error) {
+    console.error('Error fetching gift cards by order:', error);
+    return [];
+  }
+  
+  return (data || []).map(card => ({
+    id: card.id,
+    userId: card.user_id,
+    orderId: card.order_id,
+    brand: card.brand,
+    code: card.code,
+    amount: Number(card.amount),
+    purchaseDate: new Date(card.created_at).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
+    status: card.status as 'active' | 'used',
+  }));
+};
+
+export const markGiftCardAsUsed = async (cardId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('gift_cards')
+    .update({ status: 'used' })
+    .eq('id', cardId);
+  
+  if (error) {
+    console.error('Error marking gift card as used:', error);
+    throw error;
   }
 };

@@ -8,6 +8,7 @@ import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { addBalance } from "@/lib/wallet";
+import { addPendingRecharge } from "@/lib/pending-orders";
 import walletQR from "@/assets/wallet-qr-new.jpeg";
 
 const AlimenterCompte = () => {
@@ -55,23 +56,15 @@ const AlimenterCompte = () => {
     setIsProcessing(true);
 
     // Simuler l'envoi de la demande de vérification
-    setTimeout(() => {
+    setTimeout(async () => {
       // Stocker la demande de rechargement en attente
-      const pendingRecharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-      pendingRecharges.push({
-        id: `PENDING${Date.now()}`,
+      await addPendingRecharge({
         userId: user.id,
         amount,
-        date: new Date().toLocaleDateString('fr-FR', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        status: 'En cours de vérification'
+        paymentMethod: 'Crypto (USDT ERC-20)',
+        status: 'En cours de vérification',
+        transactionId: `0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}`,
       });
-      localStorage.setItem('pendingRecharges', JSON.stringify(pendingRecharges));
       
       toast({
         title: "Demande envoyée",

@@ -72,7 +72,7 @@ const PaiementCrypto = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePaymentConfirm = async () => {
+  const handlePaymentConfirm = () => {
     // Validation pour les invités
     if (isGuestCheckout && !user) {
       if (!guestEmail || !guestEmail.includes('@')) {
@@ -95,7 +95,7 @@ const PaiementCrypto = () => {
 
     setIsProcessing(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const cartItems = getCart();
       let paymentMethod = "Crypto (USDT ERC-20)";
       
@@ -132,7 +132,7 @@ const PaiementCrypto = () => {
       }
       
       const userId = user?.id || `GUEST-${guestEmail}`;
-      const order = saveOrder(userId, {
+      const order = await saveOrder(userId, {
         items: cartItems.map(item => ({
           brand: item.brand,
           name: item.name,
@@ -149,7 +149,7 @@ const PaiementCrypto = () => {
       // Générer les codes uniquement pour les paiements par solde (déjà vérifiés)
       let giftCards = [];
       if (paymentDetails.method === 'balance' && user) {
-        giftCards = createGiftCards(
+        giftCards = await createGiftCards(
           userId,
           order.id,
           cartItems.map(item => ({

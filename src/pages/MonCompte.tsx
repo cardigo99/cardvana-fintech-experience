@@ -59,27 +59,31 @@ const MonCompte = () => {
 
   // Charger les données de l'utilisateur
   useEffect(() => {
-    if (user) {
-      const userOrders = getUserOrders(user.id);
-      setOrders(userOrders);
-      
-      const wallet = getUserWallet(user.id);
-      setBalance(wallet.balance);
-      
-      const userTransactions = getTransactions(user.id);
-      setTransactions(userTransactions);
-      
-      // Charger les rechargements en attente (uniquement ceux en cours de vérification)
-      const pending = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-      const userPending = pending.filter((p: any) => 
-        p.userId === user.id && p.status === 'En cours de vérification'
-      );
-      setPendingRecharges(userPending);
-      
-      // Charger les cartes cadeaux achetées
-      const userCards = getUserGiftCards(user.id);
-      setGiftCards(userCards);
-    }
+    const loadUserData = async () => {
+      if (user) {
+        const userOrders = await getUserOrders(user.id);
+        setOrders(userOrders);
+        
+        const wallet = getUserWallet(user.id);
+        setBalance(wallet.balance);
+        
+        const userTransactions = getTransactions(user.id);
+        setTransactions(userTransactions);
+        
+        // Charger les rechargements en attente (uniquement ceux en cours de vérification)
+        const { getPendingRecharges } = await import('@/lib/pending-orders');
+        const pending = await getPendingRecharges();
+        const userPending = pending.filter((p: any) => 
+          p.userId === user.id && p.status === 'En cours de vérification'
+        );
+        setPendingRecharges(userPending);
+        
+        // Charger les cartes cadeaux achetées
+        const userCards = await getUserGiftCards(user.id);
+        setGiftCards(userCards);
+      }
+    };
+    loadUserData();
   }, [user]);
 
   const handleProfileChange = (field: string, value: string) => {

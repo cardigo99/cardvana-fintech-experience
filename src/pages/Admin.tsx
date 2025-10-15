@@ -11,14 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { addBalance } from "@/lib/wallet";
 import { getOrders, updateOrderStatus, type Order } from "@/lib/orders";
 import { createGiftCards } from "@/lib/giftcards";
-
-interface PendingRecharge {
-  id: string;
-  userId: string;
-  amount: number;
-  date: string;
-  status: string;
-}
+import { getPendingRecharges, updateRechargeStatus, type PendingRecharge } from "@/lib/pending-orders";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -37,14 +30,14 @@ const Admin = () => {
     }
   }, []);
 
-  const loadPendingTransactions = () => {
+  const loadPendingTransactions = async () => {
     // Charger les rechargements en attente
-    const recharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-    const pendingRecharges = recharges.filter((r: PendingRecharge) => r.status === 'En cours de vérification');
-    setPendingRecharges(pendingRecharges);
+    const recharges = await getPendingRecharges();
+    const pendingRechargesList = recharges.filter((r: PendingRecharge) => r.status === 'En cours de vérification');
+    setPendingRecharges(pendingRechargesList);
 
     // Charger toutes les commandes en attente (crypto, paysafecard, transcash, etc.)
-    const allOrders = getOrders();
+    const allOrders = await getOrders();
     const pendingOrdersList = allOrders.filter(order => 
       order.status === 'En cours de vérification'
     );
@@ -70,18 +63,14 @@ const Admin = () => {
     }
   };
 
-  const handleApproveRecharge = (recharge: PendingRecharge) => {
+  const handleApproveRecharge = async (recharge: PendingRecharge) => {
     // Créditer le solde
     addBalance(recharge.userId, recharge.amount, `Rechargement approuvé - ${recharge.id}`);
 
     // Mettre à jour le statut
-    const allRecharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-    const updated = allRecharges.map((r: PendingRecharge) => 
-      r.id === recharge.id ? { ...r, status: 'Approuvé' } : r
-    );
-    localStorage.setItem('pendingRecharges', JSON.stringify(updated));
+    await updateRechargeStatus(recharge.id, 'Approuvé');
 
-    loadPendingTransactions();
+    await loadPendingTransactions();
     
     toast({
       title: "Rechargement approuvé",
@@ -89,14 +78,10 @@ const Admin = () => {
     });
   };
 
-  const handleRejectRecharge = (recharge: PendingRecharge) => {
-    const allRecharges = JSON.parse(localStorage.getItem('pendingRecharges') || '[]');
-    const updated = allRecharges.map((r: PendingRecharge) => 
-      r.id === recharge.id ? { ...r, status: 'Rejeté' } : r
-    );
-    localStorage.setItem('pendingRecharges', JSON.stringify(updated));
+  const handleRejectRecharge = async (recharge: PendingRecharge) => {
+    await updateRechargeStatus(recharge.id, 'Rejeté');
 
-    loadPendingTransactions();
+    await loadPendingTransactions();
     
     toast({
       title: "Rechargement rejeté",
@@ -105,9 +90,9 @@ const Admin = () => {
     });
   };
 
-  const handleApproveOrder = (order: Order) => {
+  const handleApproveOrder = async (order: Order) => {
     // Générer les codes de cartes cadeaux
-    const giftCards = createGiftCards(
+    const giftCards = await createGiftCards(
       order.userId,
       order.id,
       order.items.map(item => ({
@@ -118,9 +103,9 @@ const Admin = () => {
     );
 
     // Mettre à jour le statut de la commande
-    updateOrderStatus(order.id, 'Livré');
+    await updateOrderStatus(order.id, 'Livré');
 
-    loadPendingTransactions();
+    await loadPendingTransactions();
     
     toast({
       title: "Commande approuvée",
@@ -128,10 +113,10 @@ const Admin = () => {
     });
   };
 
-  const handleRejectOrder = (order: Order) => {
-    updateOrderStatus(order.id, 'Annulé');
+  const handleRejectOrder = async (order: Order) => {
+    await updateOrderStatus(order.id, 'Annulé');
 
-    loadPendingTransactions();
+    await loadPendingTransactions();
     
     toast({
       title: "Commande rejetée",
